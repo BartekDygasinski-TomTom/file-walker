@@ -119,6 +119,79 @@ class ConsoleContentProviderTest {
                     .containsAll(givenVisibleDirs)
                     .containsAll(givenVisibleFiles);
         }
+
+        @DisplayName("Should mark visible directories with [dir]")
+        @Test
+        void should_mark_visible_directories() {
+            // Given
+            List<String> givenVisibleDirs = List.of("A", "B");
+
+            createTmpDirsFromStreamAtDirectoryPath(givenVisibleDirs.stream(), givenTempDir);
+
+            // When
+            List<Entry> result = underTest.provideEntriesFrom(givenTempDir);
+
+            // Then
+            assertThat(result)
+                    .extracting(Entry::value)
+                    .allMatch(name -> name.contains("[dir] "));
+        }
+
+        @DisplayName("Should not mark hidden directories with [dir]")
+        @Test
+        void should_not_mark_hidden_directories() {
+            // Given
+            List<String> givenVisibleDirs = List.of("A", "B");
+            List<String> givenHiddenDirs = List.of(".A", ".B");
+            Stream<String> dirsStream = Stream.concat(givenVisibleDirs.stream(), givenHiddenDirs.stream());
+
+            createTmpDirsFromStreamAtDirectoryPath(dirsStream, givenTempDir);
+
+            // When
+            List<Entry> result = underTest.provideEntriesFrom(givenTempDir);
+
+            // Then
+            assertThat(result)
+                    .extracting(Entry::value)
+                    .containsExactlyInAnyOrderElementsOf(
+                            givenVisibleDirs.stream()
+                                    .map(name -> "[dir] " + name)
+                                    .toList()
+                    )
+                    .doesNotContainAnyElementsOf(
+                            givenHiddenDirs.stream()
+                                    .map(name -> "[dir] " + name)
+                                    .toList()
+                    );
+        }
+
+        @DisplayName("Should not mark files with [dir]")
+        @Test
+        void should_not_mark_files() {
+            // Given
+            List<String> givenVisibleDirs = List.of("A", "B");
+            List<String> givenFiles = List.of(".a", "b", "c.txt");
+
+            createTmpDirsFromStreamAtDirectoryPath(givenVisibleDirs.stream(), givenTempDir);
+            createTmpFilesFromStreamAtDirectoryPath(givenFiles.stream(), givenTempDir);
+
+            // When
+            List<Entry> result = underTest.provideEntriesFrom(givenTempDir);
+
+            // Then
+            assertThat(result)
+                    .extracting(Entry::value)
+                    .containsExactlyInAnyOrderElementsOf(
+                            givenVisibleDirs.stream()
+                                    .map(name -> "[dir] " + name)
+                                    .toList()
+                    )
+                    .doesNotContainAnyElementsOf(
+                            givenFiles.stream()
+                                    .map(name -> "[dir] " + name)
+                                    .toList()
+                    );
+        }
     }
 
     private static void createTmpFilesFromStreamAtDirectoryPath(Stream<String> stream, Path directoryPath) {
