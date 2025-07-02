@@ -3,25 +3,31 @@ package pl.bdygasinski.filewalker;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 import pl.bdygasinski.filewalker.Entry.DirEntry;
 import pl.bdygasinski.filewalker.Entry.FileEntry;
 
+import java.io.IOException;
 import java.net.URI;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static pl.bdygasinski.filewalker.ClassLoadingUtil.ROOT_DIR;
-import static pl.bdygasinski.filewalker.ClassLoadingUtil.classpathResource;
+import static pl.bdygasinski.filewalker.ClassLoadingUtil.*;
 
 @DisplayName("ConsoleContentProvider unit tests")
 class ConsoleContentProviderTest {
 
     private final ContentProvider underTest = ContentProvider.getInstance();
 
-    @DisplayName("provideEntries() unit tests")
+    @TempDir
+    private Path givenTempDir;
+
+    @DisplayName("provideEntriesFrom() unit tests")
     @Nested
-    class ProvideEntriesTest {
+    class ProvideEntriesFromTest {
 
         @DisplayName("Should return file entry if path refers to regular file")
         @Test
@@ -32,7 +38,7 @@ class ConsoleContentProviderTest {
             Path givenPath = Path.of(givenUri);
 
             // When
-            List<Entry> result = underTest.provideEntries(givenPath);
+            List<Entry> result = underTest.provideEntriesFrom(givenPath);
 
             // Then
             assertThat(result)
@@ -49,12 +55,95 @@ class ConsoleContentProviderTest {
             Path givenPath = Path.of(givenUri);
 
             // When
-            List<Entry> result = underTest.provideEntries(givenPath);
+            List<Entry> result = underTest.provideEntriesFrom(givenPath);
 
             // Then
             assertThat(result)
                     .hasSizeGreaterThan(1)
                     .doesNotContain(givenDir);
         }
+
+        @DisplayName("Should ignore entry if given path refers to hidden file")
+        @Test
+        void should_ignore_hidden_file() {
+            // Given
+            URI givenUri = classpathResource(HIDDEN_FILE).orElseThrow();
+            Path givenPath = Path.of(givenUri);
+
+            // When
+            List<Entry> result = underTest.provideEntriesFrom(givenPath);
+
+            // Then
+            assertThat(result)
+                    .isEmpty();
+        }
+
+        @DisplayName("Should ignore entry if given path refers to hidden directory")
+        @Test
+        void should_ignore_hidden_directory() {
+            // Given
+            URI givenUri = classpathResource(HIDDEN_DIR).orElseThrow();
+            Path givenPath = Path.of(givenUri);
+
+            // When
+            List<Entry> result = underTest.provideEntriesFrom(givenPath);
+
+            // Then
+            assertThat(result)
+                    .isEmpty();
+        }
+
+        @DisplayName("Should ignore hidden entries inside directory from given path")
+        @Test
+        void should_ignore_hidden_entries_in_directory() {
+            // Given
+            List<String> givenHiddenDirs = List.of(".A", ".B", ".C");
+            List<String> givenHiddenFiles = List.of(".a.txt", ".b.txt", ".c.txt");
+            List<String> givenVisibleFiles = List.of("a.txt", "b.txt");
+            List<String> givenVisibleDirs = List.of("A", "B");
+
+            var filesStream = Stream.concat(givenHiddenFiles.stream(), givenVisibleFiles.stream());
+            var dirStream = Stream.concat(givenHiddenDirs.stream(), givenVisibleDirs.stream());
+
+            createTmpFilesFromStreamAtDirectoryPath(filesStream, givenTempDir);
+            createTmpDirsFromStreamAtDirectoryPath(dirStream, givenTempDir);
+
+            // When
+            List<Entry> result = underTest.provideEntriesFrom(givenTempDir);
+
+            // Then
+            assertThat(result)
+                    .extracting(Entry::value)
+                    .doesNotContainAnyElementsOf(givenHiddenDirs)
+                    .doesNotContainAnyElementsOf(givenHiddenFiles)
+                    .containsAll(givenVisibleDirs)
+                    .containsAll(givenVisibleFiles);
+        }
+    }
+
+    private static void createTmpFilesFromStreamAtDirectoryPath(Stream<String> stream, Path directoryPath) {
+        if (!Files.isDirectory(directoryPath)) return;
+
+        stream.map(Path::of).forEach(path -> {
+            try {
+                Files.createFile(directoryPath.resolve(path));
+
+            } catch (IOException e) {
+                throw new IllegalArgumentException();
+            }
+        });
+    }
+
+    private static void createTmpDirsFromStreamAtDirectoryPath(Stream<String> stream, Path directoryPath) {
+        if (!Files.isDirectory(directoryPath)) return;
+
+        stream.map(Path::of).forEach(path -> {
+            try {
+                Files.createDirectory(directoryPath.resolve(path));
+
+            } catch (IOException e) {
+                throw new IllegalArgumentException();
+            }
+        });
     }
 }

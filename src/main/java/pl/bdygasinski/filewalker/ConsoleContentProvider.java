@@ -6,7 +6,7 @@ import java.util.List;
 class ConsoleContentProvider implements ContentProvider{
 
     @Override
-    public List<Entry> provideEntries(Path path) {
+    public List<Entry> provideEntriesFrom(Path path) {
         throw new UnsupportedOperationException();
     }
 }

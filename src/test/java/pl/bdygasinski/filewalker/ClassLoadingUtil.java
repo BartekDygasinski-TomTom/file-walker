@@ -8,8 +8,8 @@ import java.util.Optional;
 class ClassLoadingUtil {
 
     public static final String ROOT_DIR = "/ROOT";
-    public static final String ROOT2_DIR = "/ROOT2";
     public static final String HIDDEN_DIR = "/.HIDDEN";
+    public static final String HIDDEN_FILE = "/.hidden";
 
     private static final String URI_SYNTAX_EXCEPTION_MSG = "Invalid URI for resource: %s";
 

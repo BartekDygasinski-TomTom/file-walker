@@ -9,5 +9,5 @@ interface ContentProvider {
         return new ConsoleContentProvider();
     }
 
-    List<Entry> provideEntries(Path path);
+    List<Entry> provideEntriesFrom(Path path);
 }
