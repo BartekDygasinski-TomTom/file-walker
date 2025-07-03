@@ -1,7 +1,7 @@
 package pl.bdygasinski.filewalker;
 
 import java.nio.file.Path;
-import java.util.List;
+import java.util.Set;
 
 interface ContentProvider {
 
@@ -9,5 +9,5 @@ interface ContentProvider {
         return new ConsoleContentProvider();
     }
 
-    List<Entry> provideEntriesFrom(Path path);
+    Set<Entry> provideEntriesFrom(Path path);
 }

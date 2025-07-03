@@ -12,6 +12,7 @@ import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -33,34 +34,34 @@ class ConsoleContentProviderTest {
         @Test
         void should_detect_file() {
             // Given
-            FileEntry givenFileEntry = new FileEntry("1.txt");
-            URI givenUri = classpathResource("%s/2/%s".formatted(ROOT_DIR, givenFileEntry.value())).orElseThrow();
+            URI givenUri = classpathResource(ROOT_DIR + "/2/1.txt").orElseThrow();
             Path givenPath = Path.of(givenUri);
+            FileEntry givenEntry = new FileEntry(givenPath);
 
             // When
-            List<Entry> result = underTest.provideEntriesFrom(givenPath);
+            Set<Entry> result = underTest.provideEntriesFrom(givenPath);
 
             // Then
             assertThat(result)
                     .hasSize(1)
-                    .containsExactly(givenFileEntry);
+                    .containsExactly(givenEntry);
         }
 
         @DisplayName("Should return entries from dir content instead of dir itself")
         @Test
         void should_detect_directory() {
             // Given
-            DirEntry givenDir = new DirEntry("/A");
-            URI givenUri = classpathResource(ROOT_DIR + givenDir.value()).orElseThrow();
+            URI givenUri = classpathResource(ROOT_DIR + "/A").orElseThrow();
             Path givenPath = Path.of(givenUri);
+            DirEntry givenEntry = new DirEntry(givenPath);
 
             // When
-            List<Entry> result = underTest.provideEntriesFrom(givenPath);
+            Set<Entry> result = underTest.provideEntriesFrom(givenPath);
 
             // Then
             assertThat(result)
                     .hasSizeGreaterThan(1)
-                    .doesNotContain(givenDir);
+                    .doesNotContain(givenEntry);
         }
 
         @DisplayName("Should ignore entry if given path refers to hidden file")
@@ -71,7 +72,7 @@ class ConsoleContentProviderTest {
             Path givenPath = Path.of(givenUri);
 
             // When
-            List<Entry> result = underTest.provideEntriesFrom(givenPath);
+            Set<Entry> result = underTest.provideEntriesFrom(givenPath);
 
             // Then
             assertThat(result)
@@ -86,7 +87,7 @@ class ConsoleContentProviderTest {
             Path givenPath = Path.of(givenUri);
 
             // When
-            List<Entry> result = underTest.provideEntriesFrom(givenPath);
+            Set<Entry> result = underTest.provideEntriesFrom(givenPath);
 
             // Then
             assertThat(result)
@@ -109,11 +110,11 @@ class ConsoleContentProviderTest {
             createTmpDirsFromStreamAtDirectoryPath(dirStream, givenTempDir);
 
             // When
-            List<Entry> result = underTest.provideEntriesFrom(givenTempDir);
+            Set<Entry> result = underTest.provideEntriesFrom(givenTempDir);
 
             // Then
             assertThat(result)
-                    .extracting(Entry::value)
+                    .extracting(Entry::displayName)
                     .doesNotContainAnyElementsOf(givenHiddenDirs)
                     .doesNotContainAnyElementsOf(givenHiddenFiles)
                     .containsAll(givenVisibleDirs)
@@ -129,11 +130,12 @@ class ConsoleContentProviderTest {
             createTmpDirsFromStreamAtDirectoryPath(givenVisibleDirs.stream(), givenTempDir);
 
             // When
-            List<Entry> result = underTest.provideEntriesFrom(givenTempDir);
+            Set<Entry> result = underTest.provideEntriesFrom(givenTempDir);
 
             // Then
             assertThat(result)
-                    .extracting(Entry::value)
+                    .isNotEmpty()
+                    .extracting(Entry::displayName)
                     .allMatch(name -> name.contains("[dir] "));
         }
 
@@ -148,11 +150,11 @@ class ConsoleContentProviderTest {
             createTmpDirsFromStreamAtDirectoryPath(dirsStream, givenTempDir);
 
             // When
-            List<Entry> result = underTest.provideEntriesFrom(givenTempDir);
+            Set<Entry> result = underTest.provideEntriesFrom(givenTempDir);
 
             // Then
             assertThat(result)
-                    .extracting(Entry::value)
+                    .extracting(Entry::displayName)
                     .containsExactlyInAnyOrderElementsOf(
                             givenVisibleDirs.stream()
                                     .map(name -> "[dir] " + name)
@@ -176,11 +178,11 @@ class ConsoleContentProviderTest {
             createTmpFilesFromStreamAtDirectoryPath(givenFiles.stream(), givenTempDir);
 
             // When
-            List<Entry> result = underTest.provideEntriesFrom(givenTempDir);
+            Set<Entry> result = underTest.provideEntriesFrom(givenTempDir);
 
             // Then
             assertThat(result)
-                    .extracting(Entry::value)
+                    .extracting(Entry::displayName)
                     .containsExactlyInAnyOrderElementsOf(
                             givenVisibleDirs.stream()
                                     .map(name -> "[dir] " + name)
