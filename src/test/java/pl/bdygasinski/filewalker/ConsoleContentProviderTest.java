@@ -4,19 +4,19 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
-import pl.bdygasinski.filewalker.Entry.DirEntry;
-import pl.bdygasinski.filewalker.Entry.FileEntry;
 
-import java.io.IOException;
 import java.net.URI;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static java.util.function.Predicate.not;
 import static org.assertj.core.api.Assertions.assertThat;
 import static pl.bdygasinski.filewalker.ClassLoadingUtil.*;
+import static pl.bdygasinski.filewalker.TmpFileCreator.createTmpDirsFromStreamAtDirectoryPath;
+import static pl.bdygasinski.filewalker.TmpFileCreator.createTmpFilesFromStreamAtDirectoryPath;
 
 @DisplayName("ConsoleContentProvider unit tests")
 class ConsoleContentProviderTest {
@@ -117,7 +117,7 @@ class ConsoleContentProviderTest {
                     .extracting(Entry::displayName)
                     .doesNotContainAnyElementsOf(givenHiddenDirs)
                     .doesNotContainAnyElementsOf(givenHiddenFiles)
-                    .containsAll(givenVisibleDirs)
+                    .containsAll(givenVisibleDirs.stream().map(name -> "[dir] " + name).toList())
                     .containsAll(givenVisibleFiles);
         }
 
@@ -181,44 +181,19 @@ class ConsoleContentProviderTest {
             Set<Entry> result = underTest.provideEntriesFrom(givenTempDir);
 
             // Then
+            Set<String> expectedResult = Stream.concat(
+                    givenVisibleDirs.stream().map(name -> "[dir] " + name),
+                    givenFiles.stream().filter(not(file -> file.startsWith(".")))
+            ).collect(Collectors.toSet());
+
             assertThat(result)
                     .extracting(Entry::displayName)
-                    .containsExactlyInAnyOrderElementsOf(
-                            givenVisibleDirs.stream()
-                                    .map(name -> "[dir] " + name)
-                                    .toList()
-                    )
+                    .containsExactlyInAnyOrderElementsOf(expectedResult)
                     .doesNotContainAnyElementsOf(
                             givenFiles.stream()
                                     .map(name -> "[dir] " + name)
                                     .toList()
                     );
         }
-    }
-
-    private static void createTmpFilesFromStreamAtDirectoryPath(Stream<String> stream, Path directoryPath) {
-        if (!Files.isDirectory(directoryPath)) return;
-
-        stream.map(Path::of).forEach(path -> {
-            try {
-                Files.createFile(directoryPath.resolve(path));
-
-            } catch (IOException e) {
-                throw new IllegalArgumentException();
-            }
-        });
-    }
-
-    private static void createTmpDirsFromStreamAtDirectoryPath(Stream<String> stream, Path directoryPath) {
-        if (!Files.isDirectory(directoryPath)) return;
-
-        stream.map(Path::of).forEach(path -> {
-            try {
-                Files.createDirectory(directoryPath.resolve(path));
-
-            } catch (IOException e) {
-                throw new IllegalArgumentException();
-            }
-        });
     }
 }
