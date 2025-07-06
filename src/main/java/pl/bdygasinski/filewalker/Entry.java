@@ -20,6 +20,7 @@ public sealed interface Entry permits DirEntry, FileEntry {
 
     Set<Entry> getAllRootLevelOrThrow() throws IOException;
 
+    //todo add exception entry and add it into set
     Set<Entry> getVisibleRootLevelOrThrow() throws IOException;
 
     boolean isVisible() throws UncheckedIOException;

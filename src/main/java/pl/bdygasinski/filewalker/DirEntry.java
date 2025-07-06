@@ -41,18 +41,26 @@ record DirEntry(Path value) implements Entry {
 
         @Override
         public Set<Entry> getVisibleRootLevelOrThrow() throws IOException {
-            try (var dirStream = Files.list(value)) {
-                return dirStream
-                        .map(Entry::fromPathOrThrow)
-                        .filter(Entry::isVisible)
-                        .collect(toSet());
-
-            } catch (IllegalArgumentException e) {
-                throw new IOException(e);
+            if (this.isVisible()) {
+                return getVisible();
+            } else {
+                return Set.of();
             }
         }
 
-        @Override
+    private Set<Entry> getVisible() throws IOException {
+        try (var dirStream = Files.list(value)) {
+            return dirStream
+                    .map(Entry::fromPathOrThrow)
+                    .filter(Entry::isVisible)
+                    .collect(toSet());
+
+        } catch (IllegalArgumentException e) {
+            throw new IOException(e);
+        }
+    }
+
+    @Override
         public boolean isVisible()  {
             try {
                 return !Files.isHidden(value);
