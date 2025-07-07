@@ -32,7 +32,7 @@ class ConsoleContentProviderTest {
 
         @DisplayName("Should return file entry if path refers to regular file")
         @Test
-        void should_detect_file() {
+        void shouldDetectFile() {
             // Given
             URI givenUri = classpathResource(ROOT_DIR + "/2/1.txt").orElseThrow();
             Path givenPath = Path.of(givenUri);
@@ -49,7 +49,7 @@ class ConsoleContentProviderTest {
 
         @DisplayName("Should return entries from dir content instead of dir itself")
         @Test
-        void should_detect_directory() {
+        void shouldDetectDirectory() {
             // Given
             URI givenUri = classpathResource(ROOT_DIR + "/A").orElseThrow();
             Path givenPath = Path.of(givenUri);
@@ -66,7 +66,7 @@ class ConsoleContentProviderTest {
 
         @DisplayName("Should ignore entry if given path refers to hidden file")
         @Test
-        void should_ignore_hidden_file() {
+        void shouldIgnoreHiddenFile() {
             // Given
             URI givenUri = classpathResource(HIDDEN_FILE).orElseThrow();
             Path givenPath = Path.of(givenUri);
@@ -81,7 +81,7 @@ class ConsoleContentProviderTest {
 
         @DisplayName("Should ignore entry if given path refers to hidden directory")
         @Test
-        void should_ignore_hidden_directory() {
+        void shouldIgnoreHiddenDirectory() {
             // Given
             URI givenUri = classpathResource(HIDDEN_DIR).orElseThrow();
             Path givenPath = Path.of(givenUri);
@@ -96,7 +96,7 @@ class ConsoleContentProviderTest {
 
         @DisplayName("Should ignore hidden entries inside directory from given path")
         @Test
-        void should_ignore_hidden_entries_in_directory() {
+        void shouldIgnoreHiddenEntriesInDirectory() {
             // Given
             List<String> givenHiddenDirs = List.of(".A", ".B", ".C");
             List<String> givenHiddenFiles = List.of(".a.txt", ".b.txt", ".c.txt");
@@ -123,7 +123,7 @@ class ConsoleContentProviderTest {
 
         @DisplayName("Should mark visible directories with [dir]")
         @Test
-        void should_mark_visible_directories() {
+        void shouldMarkVisibleDirectories() {
             // Given
             List<String> givenVisibleDirs = List.of("A", "B");
 
@@ -141,7 +141,7 @@ class ConsoleContentProviderTest {
 
         @DisplayName("Should not mark hidden directories with [dir]")
         @Test
-        void should_not_mark_hidden_directories() {
+        void shouldNotMarkHiddenDirectories() {
             // Given
             List<String> givenVisibleDirs = List.of("A", "B");
             List<String> givenHiddenDirs = List.of(".A", ".B");
@@ -169,7 +169,7 @@ class ConsoleContentProviderTest {
 
         @DisplayName("Should not mark files with [dir]")
         @Test
-        void should_not_mark_files() {
+        void shouldNotMarkFiles() {
             // Given
             List<String> givenVisibleDirs = List.of("A", "B");
             List<String> givenFiles = List.of(".a", "b", "c.txt");

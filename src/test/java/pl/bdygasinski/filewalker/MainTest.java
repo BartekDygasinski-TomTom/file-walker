@@ -17,7 +17,7 @@ class MainTest {
     @DisplayName("Should throw IllegalArgumentException for invalid args")
     @ParameterizedTest
     @MethodSource("invalidArgsProvider")
-    void main_should_throw_if_args_invalid(String[] args) {
+    void mainShouldThrowIfArgsInvalid(String[] args) {
         // When
         Exception result = catchException(() -> main(args));
 

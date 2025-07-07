@@ -8,7 +8,6 @@ import java.nio.file.Path;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchException;
-import static org.junit.jupiter.api.Assertions.*;
 import static pl.bdygasinski.filewalker.ClassLoadingUtil.ROOT_DIR;
 import static pl.bdygasinski.filewalker.ClassLoadingUtil.classpathResource;
 
@@ -22,7 +21,7 @@ class EntryTest {
 
         @DisplayName("Should produce FileEntry if path refers to file")
         @Test
-        void should_return_file_entry() {
+        void shouldReturnFileEntry() {
             // Given
             Path givenPath = Path.of(classpathResource(ROOT_DIR + "/2/1.txt").orElseThrow());
 
@@ -36,7 +35,7 @@ class EntryTest {
 
         @DisplayName("Should produce DirEntry if path refers to dir")
         @Test
-        void should_return_dir_entry() {
+        void shouldReturnDirEntry() {
             // Given
             Path givenPath = Path.of(classpathResource(ROOT_DIR).orElseThrow());
 
@@ -50,7 +49,7 @@ class EntryTest {
 
         @DisplayName("Should throw IllegalArgumentException when can't produce file or dir entry")
         @Test
-        void should_throw() {
+        void shouldThrow() {
             // Given
             Path givenPath = null;
 

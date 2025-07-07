@@ -35,7 +35,7 @@ class DirEntryTest {
 
         @DisplayName("Should throw IllegalArgumentException when path is null")
         @Test
-        void should_throw_if_path_is_null() {
+        void shouldThrowIfPathIsNull() {
             // Given
             Path givenPath = null;
 
@@ -49,7 +49,7 @@ class DirEntryTest {
 
         @DisplayName("Should throw IllegalArgumentException when path doesn't refer directory")
         @Test
-        void should_throw_if_path_doesnt_refers_directory() {
+        void shouldThrowIfPathDoesntReferDirectory() {
             // Given
             URI givenUri = classpathResource(ROOT_DIR + "/2/1.txt").orElseThrow();
             Path givenPath = Path.of(givenUri);
@@ -69,7 +69,7 @@ class DirEntryTest {
 
         @DisplayName("Should display base name as display name with marked [dir]")
         @Test
-        void should_display_basename() {
+        void shouldDisplayBasename() {
             // Given
             Path givenPath = Path.of(classpathResource(ROOT_DIR).orElseThrow());
             String givenBasename = ROOT_DIR.replace("/", "");
@@ -90,7 +90,7 @@ class DirEntryTest {
 
         @DisplayName("Should throw if of of entries can't be created")
         @Test
-        void should_throw() {
+        void shouldThrow() {
             // Given
             Path givenPath = Path.of(classpathResource(ROOT_DIR).orElseThrow());
             DirEntry underTest = new DirEntry(givenPath);
@@ -110,7 +110,7 @@ class DirEntryTest {
 
         @DisplayName("Should map directory content to set of entries including all items")
         @Test
-        void should_map_and_include_all_items() throws IOException {
+        void shouldMapAndIncludeAllItems() throws IOException {
             // Given
             List<String> dirItems = List.of("A", ".B");
             List<String> fileItems = List.of("a", ".b");
@@ -140,7 +140,7 @@ class DirEntryTest {
 
         @DisplayName("Should throw if of of entries can't be created")
         @Test
-        void should_throw() {
+        void shouldThrow() {
             // Given
             Path givenPath = Path.of(classpathResource(ROOT_DIR).orElseThrow());
             DirEntry underTest = new DirEntry(givenPath);
@@ -160,7 +160,7 @@ class DirEntryTest {
 
         @DisplayName("Should map directory content to set of entries without hidden one")
         @Test
-        void should_map_and_include_all_items() throws IOException {
+        void shouldMapAndIncludeAllItems() throws IOException {
             // Given
             List<String> dirItems = List.of("A", ".B");
             List<String> fileItems = List.of("a", ".b");
@@ -194,7 +194,7 @@ class DirEntryTest {
 
         @DisplayName("Should throw UncheckedIOException when can't check visibility")
         @Test
-        void should_throw() {
+        void shouldThrow() {
             // Given
             Path givenPath = Path.of(classpathResource(ROOT_DIR).orElseThrow());
             DirEntry underTest = new DirEntry(givenPath);
@@ -219,7 +219,7 @@ class DirEntryTest {
 
         @DisplayName("Should return true if file is not hidden")
         @Test
-        void should_return_true() {
+        void shouldReturnTrue() {
             // Given
             Path givenPath = Path.of(classpathResource(ROOT_DIR).orElseThrow());
             DirEntry underTest = new DirEntry(givenPath);
@@ -234,7 +234,7 @@ class DirEntryTest {
 
         @DisplayName("Should return false if file is hidden")
         @Test
-        void should_return_false() {
+        void shouldReturnFalse() {
             // Given
             Path givenPath = Path.of(classpathResource(HIDDEN_DIR).orElseThrow());
             DirEntry underTest = new DirEntry(givenPath);
@@ -254,7 +254,7 @@ class DirEntryTest {
 
         @DisplayName("Should return path")
         @Test
-        void should_return_test() {
+        void shouldReturnPath() {
             // Given
             URI givenUri = classpathResource(ROOT_DIR).orElseThrow();
             Path givenPath = Path.of(givenUri);

@@ -25,7 +25,7 @@ class FileEntryTest {
 
         @DisplayName("Should throw IllegalArgumentException when path is null")
         @Test
-        void should_throw_if_path_is_null() {
+        void shouldThrowIfPathIsNull() {
             // Given
             Path givenPath = null;
 
@@ -39,7 +39,7 @@ class FileEntryTest {
 
         @DisplayName("Should throw IllegalArgumentException when path refer directory")
         @Test
-        void should_throw_if_path_refers_directory() {
+        void shouldThrowIfPathRefersDirectory() {
             // Given
             URI givenUri = classpathResource(ROOT_DIR).orElseThrow();
             Path givenPath = Path.of(givenUri);
@@ -59,7 +59,7 @@ class FileEntryTest {
 
         @DisplayName("Should display base name as display name")
         @Test
-        void should_display_basename() {
+        void shouldDisplayBasename() {
             // Given
             String givenFileBasename = "1.txt";
             URI givenUri = classpathResource(ROOT_DIR + "/2/" + givenFileBasename).orElseThrow();
@@ -81,7 +81,7 @@ class FileEntryTest {
 
         @DisplayName("Should return set with single entry")
         @Test
-        void should_return_set_of_entries() {
+        void shouldReturnSetOfEntries() {
             // Given
             String givenFileBasename = "1.txt";
             URI givenUri = classpathResource(ROOT_DIR + "/2/" + givenFileBasename).orElseThrow();
@@ -103,7 +103,7 @@ class FileEntryTest {
 
         @DisplayName("Should return empty set if entry is not visible")
         @Test
-        void should_return_empty_set() {
+        void shouldReturnEmptySet() {
             // Given
             URI givenUri = classpathResource(HIDDEN_FILE).orElseThrow();
             Path givenPath = Path.of(givenUri);
@@ -119,7 +119,7 @@ class FileEntryTest {
 
         @DisplayName("Should return set with single element when entry is visible")
         @Test
-        void should_return_set_with_one_item() {
+        void shouldReturnSetWithOneItem() {
             // Given
             String givenFileBasename = "1.txt";
             URI givenUri = classpathResource(ROOT_DIR + "/2/" + givenFileBasename).orElseThrow();
@@ -141,7 +141,7 @@ class FileEntryTest {
 
         @DisplayName("Should throw UncheckedIOException when can't check visibility")
         @Test
-        void should_throw() {
+        void shouldThrow() {
             // Given
             Path givenPath = Path.of(classpathResource(ROOT_DIR + "/2/1.txt").orElseThrow());
             FileEntry underTest = new FileEntry(givenPath);
@@ -166,7 +166,7 @@ class FileEntryTest {
 
         @DisplayName("Should return true if file is not hidden")
         @Test
-        void should_return_true() {
+        void shouldReturnTrue() {
             // Given
             Path givenPath = Path.of(classpathResource(ROOT_DIR + "/2/1.txt").orElseThrow());
             FileEntry underTest = new FileEntry(givenPath);
@@ -181,7 +181,7 @@ class FileEntryTest {
 
         @DisplayName("Should return false if file is hidden")
         @Test
-        void should_return_false() {
+        void shouldReturnFalse() {
             // Given
             Path givenPath = Path.of(classpathResource(HIDDEN_FILE).orElseThrow());
             FileEntry underTest = new FileEntry(givenPath);
@@ -201,7 +201,7 @@ class FileEntryTest {
 
         @DisplayName("Should return path")
         @Test
-        void should_return_test() {
+        void shouldReturnTest() {
             // Given
             URI givenUri = classpathResource(ROOT_DIR + "/2/1.txt").orElseThrow();
             Path givenPath = Path.of(givenUri);

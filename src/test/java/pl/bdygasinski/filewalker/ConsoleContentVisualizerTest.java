@@ -44,7 +44,7 @@ class ConsoleContentVisualizerTest {
 
         @DisplayName("Should display content")
         @Test
-        void should_println_content() {
+        void shouldPrintLnContent() {
             // Given
             Path givenRootDirPath = Path.of(classpathResource(ROOT_DIR).orElseThrow());
             DirEntry givenEntry2 = new DirEntry(givenRootDirPath);
@@ -66,7 +66,7 @@ class ConsoleContentVisualizerTest {
 
         @DisplayName("Should require non null Path")
         @Test
-        void should_require_non_null_path() {
+        void shouldRequireNonNullPath() {
             // Given
             Path givenPath = null;
 
