@@ -11,7 +11,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchException;
 import static pl.bdygasinski.filewalker.Main.main;
 
-@DisplayName("Main unit tests")
 class MainTest {
 
     @DisplayName("Should throw IllegalArgumentException for invalid args")

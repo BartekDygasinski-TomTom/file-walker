@@ -4,8 +4,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
 import pl.bdygasinski.filewalker.model.Entry;
 
 import java.io.ByteArrayOutputStream;
@@ -18,8 +16,6 @@ import static org.assertj.core.api.Assertions.catchException;
 import static pl.bdygasinski.filewalker.helper.TestClassLoadingUtil.ROOT_DIR;
 import static pl.bdygasinski.filewalker.helper.TestClassLoadingUtil.classpathResource;
 
-@DisplayName("ConsoleContentVisualizer unit tests")
-@ExtendWith(MockitoExtension.class)
 class ConsoleContentVisualizerTest {
 
     private final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();

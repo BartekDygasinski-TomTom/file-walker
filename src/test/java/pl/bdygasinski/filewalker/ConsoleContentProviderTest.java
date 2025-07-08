@@ -19,7 +19,6 @@ import static pl.bdygasinski.filewalker.helper.TestClassLoadingUtil.*;
 import static pl.bdygasinski.filewalker.helper.TestTmpFileCreator.createTmpDirsFromStreamAtDirectoryPath;
 import static pl.bdygasinski.filewalker.helper.TestTmpFileCreator.createTmpFilesFromStreamAtDirectoryPath;
 
-@DisplayName("ConsoleContentProvider unit tests")
 class ConsoleContentProviderTest {
 
     private final ContentProvider underTest = ContentProvider.getInstance();

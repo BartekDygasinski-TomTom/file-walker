@@ -11,7 +11,6 @@ import static org.assertj.core.api.Assertions.catchException;
 import static pl.bdygasinski.filewalker.helper.TestClassLoadingUtil.ROOT_DIR;
 import static pl.bdygasinski.filewalker.helper.TestClassLoadingUtil.classpathResource;
 
-@DisplayName("Entry unit tests")
 class EntryTest {
 
 

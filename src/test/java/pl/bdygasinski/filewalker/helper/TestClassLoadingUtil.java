@@ -13,9 +13,7 @@ public class TestClassLoadingUtil {
 
     private static final String URI_SYNTAX_EXCEPTION_MSG = "Invalid URI for resource: %s";
 
-    private TestClassLoadingUtil() {
-        throw new UnsupportedOperationException("Can't create util class"); //Prevent reflection
-    }
+    private TestClassLoadingUtil() {}
 
     public static Optional<URI> classpathResource(String classpath) {
         return Optional.ofNullable(TestClassLoadingUtil.class.getResource(classpath))

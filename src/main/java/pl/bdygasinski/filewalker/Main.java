@@ -7,9 +7,9 @@ import java.util.Set;
 
 import static java.util.Objects.isNull;
 
-interface Main {
+class Main {
 
-    static void main(String[] args) {
+    public static void main(String[] args) {
         validateInput(args);
         Path path = Path.of(args[0]);
 

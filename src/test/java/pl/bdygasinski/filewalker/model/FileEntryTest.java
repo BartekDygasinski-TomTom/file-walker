@@ -3,9 +3,9 @@ package pl.bdygasinski.filewalker.model;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import pl.bdygasinski.filewalker.exception.EntryNotAccessibleException;
 
 import java.io.IOException;
-import java.io.UncheckedIOException;
 import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -16,7 +16,6 @@ import static org.assertj.core.api.Assertions.catchException;
 import static org.mockito.Mockito.mockStatic;
 import static pl.bdygasinski.filewalker.helper.TestClassLoadingUtil.*;
 
-@DisplayName("FileEntry unit tests")
 class FileEntryTest {
 
     @DisplayName("Constructor unit tests")
@@ -159,7 +158,7 @@ class FileEntryTest {
 
             // Then
             assertThat(result)
-                    .isExactlyInstanceOf(UncheckedIOException.class)
+                    .isExactlyInstanceOf(EntryNotAccessibleException.class)
                     .extracting(Throwable::getCause)
                     .isExactlyInstanceOf(IOException.class);
         }

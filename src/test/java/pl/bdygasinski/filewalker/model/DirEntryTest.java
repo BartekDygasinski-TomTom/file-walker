@@ -4,9 +4,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+import pl.bdygasinski.filewalker.exception.EntryNotAccessibleException;
 
 import java.io.IOException;
-import java.io.UncheckedIOException;
 import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -23,7 +23,6 @@ import static pl.bdygasinski.filewalker.helper.TestClassLoadingUtil.*;
 import static pl.bdygasinski.filewalker.helper.TestTmpFileCreator.createTmpDirsFromStreamAtDirectoryPath;
 import static pl.bdygasinski.filewalker.helper.TestTmpFileCreator.createTmpFilesFromStreamAtDirectoryPath;
 
-@DisplayName("DirEntry unit tests")
 class DirEntryTest {
 
     @TempDir
@@ -212,7 +211,7 @@ class DirEntryTest {
 
             // Then
             assertThat(result)
-                    .isExactlyInstanceOf(UncheckedIOException.class)
+                    .isExactlyInstanceOf(EntryNotAccessibleException.class)
                     .extracting(Throwable::getCause)
                     .isExactlyInstanceOf(IOException.class);
         }

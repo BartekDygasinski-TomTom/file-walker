@@ -1,7 +1,5 @@
 package pl.bdygasinski.filewalker.model;
 
-import java.io.IOException;
-import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Set;
@@ -22,11 +20,6 @@ record FileEntry(Path value) implements Entry {
         }
 
         @Override
-        public String displayName() {
-            return value.getFileName().toString();
-        }
-
-        @Override
         public Set<Entry> getAllRootLevelOrThrow() {
             return Set.of(this);
         }
@@ -34,15 +27,5 @@ record FileEntry(Path value) implements Entry {
         @Override
         public Set<Entry> getVisibleRootLevelOrThrow() {
             return this.isVisible() ? Set.of(this) : Set.of();
-        }
-
-        @Override
-        public boolean isVisible() throws UncheckedIOException {
-            try {
-                return !Files.isHidden(value);
-
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
-            }
         }
     }

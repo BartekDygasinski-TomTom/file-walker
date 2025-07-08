@@ -1,7 +1,9 @@
 package pl.bdygasinski.filewalker.model;
 
+import pl.bdygasinski.filewalker.exception.EntryNotAccessibleException;
+
 import java.io.IOException;
-import java.io.UncheckedIOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayDeque;
 import java.util.List;
@@ -16,14 +18,24 @@ public sealed interface Entry permits DirEntry, FileEntry {
     String VALUE_MUST_NOT_BE_NULL = "Value must not be null";
 
 
-    String displayName();
-
     Set<Entry> getAllRootLevelOrThrow() throws IOException;
 
-    //todo add exception entry and add it into set
     Set<Entry> getVisibleRootLevelOrThrow() throws IOException;
 
-    boolean isVisible() throws UncheckedIOException;
+    default String displayName() {
+        return value().getFileName().toString();
+    }
+
+    default boolean isVisible() {
+        try {
+            return !Files.isHidden(value());
+
+        } catch (IOException e) {
+            throw new EntryNotAccessibleException("Can't access visibility data", e);
+        }
+    }
+
+    Path value();
 
 
 

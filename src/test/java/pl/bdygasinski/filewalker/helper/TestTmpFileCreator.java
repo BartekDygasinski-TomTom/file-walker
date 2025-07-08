@@ -7,9 +7,7 @@ import java.util.stream.Stream;
 
 public class TestTmpFileCreator {
 
-    private TestTmpFileCreator() {
-        throw new UnsupportedOperationException("Can't create util class"); //Prevent reflection
-    }
+    private TestTmpFileCreator() { }
 
     public static void createTmpFilesFromStreamAtDirectoryPath(Stream<String> stream, Path directoryPath) {
         if (!Files.isDirectory(directoryPath)) return;
