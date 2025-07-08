@@ -36,7 +36,7 @@ class ConsoleContentProviderTest {
             // Given
             URI givenUri = classpathResource(ROOT_DIR + "/2/1.txt").orElseThrow();
             Path givenPath = Path.of(givenUri);
-            Entry givenEntry = Entry.fromPathOrThrow(givenPath);
+            Entry givenEntry = Entry.fromPath(givenPath);
 
             // When
             Set<Entry> result = underTest.provideEntriesFrom(givenPath);
@@ -53,7 +53,7 @@ class ConsoleContentProviderTest {
             // Given
             URI givenUri = classpathResource(ROOT_DIR + "/A").orElseThrow();
             Path givenPath = Path.of(givenUri);
-            Entry givenEntry = Entry.fromPathOrThrow(givenPath);
+            Entry givenEntry = Entry.fromPath(givenPath);
 
             // When
             Set<Entry> result = underTest.provideEntriesFrom(givenPath);

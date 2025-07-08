@@ -14,9 +14,9 @@ import static pl.bdygasinski.filewalker.helper.TestClassLoadingUtil.classpathRes
 class EntryTest {
 
 
-    @DisplayName("FromPathOrThrow unit tests")
+    @DisplayName("fromPath() unit tests")
     @Nested
-    class FormPathOrThrowTest {
+    class FromPathTest {
 
         @DisplayName("Should produce FileEntry if path refers to file")
         @Test
@@ -25,7 +25,7 @@ class EntryTest {
             Path givenPath = Path.of(classpathResource(ROOT_DIR + "/2/1.txt").orElseThrow());
 
             // When
-            Entry result = Entry.fromPathOrThrow(givenPath);
+            Entry result = Entry.fromPath(givenPath);
 
             // Then
             assertThat(result)
@@ -39,25 +39,25 @@ class EntryTest {
             Path givenPath = Path.of(classpathResource(ROOT_DIR).orElseThrow());
 
             // When
-            Entry result = Entry.fromPathOrThrow(givenPath);
+            Entry result = Entry.fromPath(givenPath);
 
             // Then
             assertThat(result)
                     .isExactlyInstanceOf(DirEntry.class);
         }
 
-        @DisplayName("Should throw IllegalArgumentException when can't produce file or dir entry")
+        @DisplayName("Should produce ErrorEntry when can't produce file or dir entry")
         @Test
-        void shouldThrow() {
+        void shouldReturnErrorEntry() {
             // Given
             Path givenPath = null;
 
             // When
-            Exception result = catchException(() -> Entry.fromPathOrThrow(givenPath));
+            Entry result = Entry.fromPath(givenPath);
 
             // Then
             assertThat(result)
-                    .isExactlyInstanceOf(IllegalArgumentException.class);
+                    .isExactlyInstanceOf(ErrorEntry.class);
         }
     }
 

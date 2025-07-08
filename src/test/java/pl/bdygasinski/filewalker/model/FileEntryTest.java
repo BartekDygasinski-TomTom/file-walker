@@ -74,13 +74,13 @@ class FileEntryTest {
         }
     }
 
-    @DisplayName("getAllRootLevelOrThrow() unit tests")
+    @DisplayName("getRootLevelEntries() unit tests")
     @Nested
-    class GetAllRootLevelOrThrowTest {
+    class GetRootLevelEntriesTest {
 
-        @DisplayName("Should return set with single entry")
+        @DisplayName("Should return set with single entry when path refers to visible file")
         @Test
-        void shouldReturnSetOfEntries() {
+        void shouldReturnSetWithSingleEntry() {
             // Given
             String givenFileBasename = "1.txt";
             URI givenUri = classpathResource(ROOT_DIR + "/2/" + givenFileBasename).orElseThrow();
@@ -88,7 +88,7 @@ class FileEntryTest {
             FileEntry underTest = new FileEntry(givenPath);
 
             // When
-            Set<Entry> result = underTest.getAllRootLevelOrThrow();
+            Set<Entry> result = underTest.getRootLevelEntries();
 
             // Then
             assertThat(result)
@@ -96,9 +96,9 @@ class FileEntryTest {
         }
     }
 
-    @DisplayName("getVisibleRootLevelOrThrow() unit tests")
+    @DisplayName("getVisibleRootLevelEntries() unit tests")
     @Nested
-    class GetVisibleRootLevelOrThrowTest {
+    class GetVisibleRootLevelEntriesTest {
 
         @DisplayName("Should return empty set if entry is not visible")
         @Test
@@ -109,14 +109,14 @@ class FileEntryTest {
             FileEntry underTest = new FileEntry(givenPath);
 
             // When
-            Set<Entry> result = underTest.getVisibleRootLevelOrThrow();
+            Set<Entry> result = underTest.getVisibleRootLevelEntries();
 
             // Then
             assertThat(result)
                     .isEmpty();
         }
 
-        @DisplayName("Should return set with single element when entry is visible")
+        @DisplayName("Should return set with single element when file entry is visible")
         @Test
         void shouldReturnSetWithOneItem() {
             // Given
@@ -126,7 +126,7 @@ class FileEntryTest {
             FileEntry underTest = new FileEntry(givenPath);
 
             // When
-            Set<Entry> result = underTest.getVisibleRootLevelOrThrow();
+            Set<Entry> result = underTest.getVisibleRootLevelEntries();
 
             // Then
             assertThat(result)

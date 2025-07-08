@@ -22,24 +22,19 @@ record DirEntry(Path value) implements Entry {
     }
 
     @Override
-    public String displayName() {
-        return String.format("[dir] %s", Entry.super.displayName());
-    }
-
-    @Override
-    public Set<Entry> getAllRootLevelOrThrow() throws IOException {
+    public Set<Entry> getRootLevelEntries() {
         try (var dirStream = Files.list(value)) {
             return dirStream
-                    .map(Entry::fromPathOrThrow)
+                    .map(Entry::fromPath)
                     .collect(toSet());
 
-        } catch (IllegalArgumentException e) {
-            throw new IOException(e);
+        } catch (IOException e) {
+            return Set.of(new ErrorEntry());
         }
     }
 
     @Override
-    public Set<Entry> getVisibleRootLevelOrThrow() throws IOException {
+    public Set<Entry> getVisibleRootLevelEntries() {
         if (this.isVisible()) {
             return getVisible();
         } else {
@@ -47,15 +42,20 @@ record DirEntry(Path value) implements Entry {
         }
     }
 
-    private Set<Entry> getVisible() throws IOException {
+    @Override
+    public String displayName() {
+        return String.format("[dir] %s", Entry.super.displayName());
+    }
+
+    private Set<Entry> getVisible() {
         try (var dirStream = Files.list(value)) {
             return dirStream
-                    .map(Entry::fromPathOrThrow)
+                    .map(Entry::fromPath)
                     .filter(Entry::isVisible)
                     .collect(toSet());
 
-        } catch (IllegalArgumentException e) {
-            throw new IOException(e);
+        } catch (IOException e) {
+            return Set.of(new ErrorEntry());
         }
     }
 }

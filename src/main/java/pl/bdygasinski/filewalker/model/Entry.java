@@ -12,15 +12,14 @@ import java.util.Set;
 import java.util.function.Supplier;
 
 
-public sealed interface Entry permits DirEntry, FileEntry {
+public sealed interface Entry permits DirEntry, ErrorEntry, FileEntry {
 
-    String CAN_T_PRODUCE_ENTRY_FROM_GIVEN_PATH = "Can't produce entry from given path: ";
     String VALUE_MUST_NOT_BE_NULL = "Value must not be null";
 
 
-    Set<Entry> getAllRootLevelOrThrow() throws IOException;
+    Set<Entry> getRootLevelEntries();
 
-    Set<Entry> getVisibleRootLevelOrThrow() throws IOException;
+    Set<Entry> getVisibleRootLevelEntries();
 
     default String displayName() {
         return value().getFileName().toString();
@@ -38,11 +37,11 @@ public sealed interface Entry permits DirEntry, FileEntry {
     Path value();
 
 
-
-    static Entry fromPathOrThrow(Path path) {
+    static Entry fromPath(Path path) {
         Queue<Supplier<Entry>> entriesSupplier = new ArrayDeque<>(List.of(
                 () -> new FileEntry(path),
-                () -> new DirEntry(path)
+                () -> new DirEntry(path),
+                () -> new ErrorEntry()
         ));
 
         while (!entriesSupplier.isEmpty()) {
@@ -54,6 +53,6 @@ public sealed interface Entry permits DirEntry, FileEntry {
             }
         }
 
-        throw new IllegalArgumentException(CAN_T_PRODUCE_ENTRY_FROM_GIVEN_PATH + path);
+        return new ErrorEntry();
     }
 }

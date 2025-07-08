@@ -83,11 +83,11 @@ class DirEntryTest {
         }
     }
 
-    @DisplayName("getAllRootLevelOrThrow() unit tests")
+    @DisplayName("getRootLevelEntries() unit tests")
     @Nested
-    class GetAllRootLevelOrThrowTest {
+    class GetRootLevelEntriesTest {
 
-        @DisplayName("Should throw if entries can't be created")
+        @DisplayName("Should return set with one ErrorEntry when path refers to unaccessible dir")
         @Test
         void shouldThrow() {
             // Given
@@ -96,14 +96,14 @@ class DirEntryTest {
 
             try (var entryMock = mockStatic(Entry.class)) {
                 entryMock
-                        .when(() -> Entry.fromPathOrThrow(any(Path.class)))
-                        .thenThrow(IllegalArgumentException.class);
+                        .when(() -> Entry.fromPath(any(Path.class)))
+                        .thenReturn(new ErrorEntry());
                 // When
-                Exception result = catchException(underTest::getAllRootLevelOrThrow);
+                Set<Entry> result = underTest.getRootLevelEntries();
 
                 // Then
                 assertThat(result)
-                        .isExactlyInstanceOf(IOException.class);
+                        .containsExactly(new ErrorEntry());
             }
         }
 
@@ -120,7 +120,7 @@ class DirEntryTest {
             DirEntry underTest = new DirEntry(givenTempDir);
 
             // When
-            Set<Entry> result = underTest.getAllRootLevelOrThrow();
+            Set<Entry> result = underTest.getRootLevelEntries();
 
             // Then
             assertThat(result)
@@ -133,11 +133,11 @@ class DirEntryTest {
 
     }
 
-    @DisplayName("getVisibleRootLevelOrThrow() unit tests")
+    @DisplayName("getVisibleRootLevelEntries() unit tests")
     @Nested
-    class GetVisibleRootLevelOrThrowTest {
+    class GetVisibleRootLevelEntriesTest {
 
-        @DisplayName("Should throw if of of entries can't be created")
+        @DisplayName("Should return set with one ErrorEntry when path refers to unaccessible dir")
         @Test
         void shouldThrow() {
             // Given
@@ -146,14 +146,14 @@ class DirEntryTest {
 
             try (var entryMock = mockStatic(Entry.class)) {
                 entryMock
-                        .when(() -> Entry.fromPathOrThrow(any(Path.class)))
-                        .thenThrow(IllegalArgumentException.class);
+                        .when(() -> Entry.fromPath(any(Path.class)))
+                        .thenReturn(new ErrorEntry());
                 // When
-                Exception result = catchException(underTest::getVisibleRootLevelOrThrow);
+                Set<Entry> result = underTest.getVisibleRootLevelEntries();
 
                 // Then
                 assertThat(result)
-                        .isExactlyInstanceOf(IOException.class);
+                        .containsExactly(new ErrorEntry());
             }
         }
 
@@ -170,7 +170,7 @@ class DirEntryTest {
             DirEntry underTest = new DirEntry(givenTempDir);
 
             // When
-            Set<Entry> result = underTest.getVisibleRootLevelOrThrow();
+            Set<Entry> result = underTest.getVisibleRootLevelEntries();
 
             // Then
             assertThat(result)

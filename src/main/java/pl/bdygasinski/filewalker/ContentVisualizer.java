@@ -8,16 +8,14 @@ import static java.util.Objects.requireNonNull;
 
 public interface ContentVisualizer {
 
-    void listVisible();
-
-
-
     static ContentVisualizer withEntries(Set<Entry> entries) {
         return new ConsoleContentVisualizer(entries);
     }
+
+    void listVisible();
 }
 
-class ConsoleContentVisualizer implements ContentVisualizer{
+class ConsoleContentVisualizer implements ContentVisualizer {
 
     private final Set<Entry> entries;
 

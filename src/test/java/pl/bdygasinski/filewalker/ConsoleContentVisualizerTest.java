@@ -36,10 +36,10 @@ class ConsoleContentVisualizerTest {
         void shouldPrintLnContent() {
             // Given
             Path givenRootDirPath = Path.of(classpathResource(ROOT_DIR).orElseThrow());
-            Entry givenEntry2 = Entry.fromPathOrThrow(givenRootDirPath);
+            Entry givenEntry2 = Entry.fromPath(givenRootDirPath);
 
             Path givenFilePath = Path.of(classpathResource(ROOT_DIR + "/2/1.txt").orElseThrow());
-            Entry givenEntry1 = Entry.fromPathOrThrow(givenFilePath);
+            Entry givenEntry1 = Entry.fromPath(givenFilePath);
 
             Set<Entry> givenData = Set.of(givenEntry1, givenEntry2);
             ContentVisualizer underTest = ContentVisualizer.withEntries(givenData);
