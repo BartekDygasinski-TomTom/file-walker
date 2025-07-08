@@ -5,8 +5,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import pl.bdygasinski.filewalker.model.Entry;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -15,9 +15,8 @@ import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchException;
-import static org.mockito.BDDMockito.given;
-import static pl.bdygasinski.filewalker.ClassLoadingUtil.ROOT_DIR;
-import static pl.bdygasinski.filewalker.ClassLoadingUtil.classpathResource;
+import static pl.bdygasinski.filewalker.helper.TestClassLoadingUtil.ROOT_DIR;
+import static pl.bdygasinski.filewalker.helper.TestClassLoadingUtil.classpathResource;
 
 @DisplayName("ConsoleContentVisualizer unit tests")
 @ExtendWith(MockitoExtension.class)
@@ -26,16 +25,10 @@ class ConsoleContentVisualizerTest {
     private final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
     private final ByteArrayOutputStream errorStream = new ByteArrayOutputStream();
 
-    @Mock
-    private ContentProvider contentProvider;
-
-    private ContentVisualizer underTest;
-
     @BeforeEach
     void setUp() {
         System.setOut(new PrintStream(outputStream));
         System.setErr(new PrintStream(errorStream));
-        underTest = ContentVisualizer.getInstance(contentProvider);
     }
 
     @DisplayName("showRoot() unit tests")
@@ -47,16 +40,16 @@ class ConsoleContentVisualizerTest {
         void shouldPrintLnContent() {
             // Given
             Path givenRootDirPath = Path.of(classpathResource(ROOT_DIR).orElseThrow());
-            DirEntry givenEntry2 = new DirEntry(givenRootDirPath);
+            Entry givenEntry2 = Entry.fromPathOrThrow(givenRootDirPath);
 
             Path givenFilePath = Path.of(classpathResource(ROOT_DIR + "/2/1.txt").orElseThrow());
-            FileEntry givenEntry1 = new FileEntry(givenFilePath);
+            Entry givenEntry1 = Entry.fromPathOrThrow(givenFilePath);
 
-            given(contentProvider.provideEntriesFrom(givenRootDirPath))
-                    .willReturn(Set.of(givenEntry1, givenEntry2));
+            Set<Entry> givenData = Set.of(givenEntry1, givenEntry2);
+            ContentVisualizer underTest = ContentVisualizer.withEntries(givenData);
 
             // When
-            underTest.listVisible(givenRootDirPath);
+            underTest.listVisible();
 
             // Then
             assertThat(outputStream.toString())
@@ -64,14 +57,14 @@ class ConsoleContentVisualizerTest {
             
         }
 
-        @DisplayName("Should require non null Path")
+        @DisplayName("Should require non null entries")
         @Test
         void shouldRequireNonNullPath() {
             // Given
-            Path givenPath = null;
+            Set<Entry> entries = null;
 
             // When
-            Exception result = catchException(() -> underTest.listVisible(givenPath));
+            Exception result = catchException(() -> new ConsoleContentVisualizer(entries));
 
             // Then
             assertThat(result)

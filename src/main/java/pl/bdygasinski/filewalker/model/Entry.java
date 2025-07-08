@@ -1,4 +1,4 @@
-package pl.bdygasinski.filewalker;
+package pl.bdygasinski.filewalker.model;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;

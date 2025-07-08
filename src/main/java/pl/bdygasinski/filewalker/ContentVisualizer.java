@@ -1,32 +1,32 @@
 package pl.bdygasinski.filewalker;
 
-import java.nio.file.Path;
+import pl.bdygasinski.filewalker.model.Entry;
+
 import java.util.Set;
 
 import static java.util.Objects.requireNonNull;
 
 public interface ContentVisualizer {
 
-    void listVisible(Path path);
+    void listVisible();
 
 
 
-    static ContentVisualizer getInstance(ContentProvider contentProvider) {
-        return new ConsoleContentVisualizer(requireNonNull(contentProvider));
+    static ContentVisualizer withEntries(Set<Entry> entries) {
+        return new ConsoleContentVisualizer(entries);
     }
 }
 
 class ConsoleContentVisualizer implements ContentVisualizer{
 
-    private final ContentProvider contentProvider;
+    private final Set<Entry> entries;
 
-    ConsoleContentVisualizer(ContentProvider contentProvider) {
-        this.contentProvider = requireNonNull(contentProvider);
+    ConsoleContentVisualizer(Set<Entry> entries) {
+        this.entries = requireNonNull(entries);
     }
 
     @Override
-    public void listVisible(Path path) {
-        Set<Entry> entries = contentProvider.provideEntriesFrom(requireNonNull(path));
+    public void listVisible() {
         entries.stream()
                 .map(Entry::displayName)
                 .forEach(System.out::println);

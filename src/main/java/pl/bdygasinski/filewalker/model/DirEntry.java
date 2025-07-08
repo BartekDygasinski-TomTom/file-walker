@@ -1,4 +1,4 @@
-package pl.bdygasinski.filewalker;
+package pl.bdygasinski.filewalker.model;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -13,7 +13,7 @@ record DirEntry(Path value) implements Entry {
 
         private static final String EXPECTED_A_DIRECTORY_BUT_GOT_A_FILE = "Expected a directory, but got a file: ";
 
-        public DirEntry {
+        DirEntry {
             if (isNull(value)) {
                 throw new IllegalArgumentException(VALUE_MUST_NOT_BE_NULL);
             }

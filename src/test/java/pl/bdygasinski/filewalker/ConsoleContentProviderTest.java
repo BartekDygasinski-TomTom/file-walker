@@ -4,6 +4,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+import pl.bdygasinski.filewalker.model.Entry;
 
 import java.net.URI;
 import java.nio.file.Path;
@@ -14,9 +15,9 @@ import java.util.stream.Stream;
 
 import static java.util.function.Predicate.not;
 import static org.assertj.core.api.Assertions.assertThat;
-import static pl.bdygasinski.filewalker.ClassLoadingUtil.*;
-import static pl.bdygasinski.filewalker.TmpFileCreator.createTmpDirsFromStreamAtDirectoryPath;
-import static pl.bdygasinski.filewalker.TmpFileCreator.createTmpFilesFromStreamAtDirectoryPath;
+import static pl.bdygasinski.filewalker.helper.TestClassLoadingUtil.*;
+import static pl.bdygasinski.filewalker.helper.TestTmpFileCreator.createTmpDirsFromStreamAtDirectoryPath;
+import static pl.bdygasinski.filewalker.helper.TestTmpFileCreator.createTmpFilesFromStreamAtDirectoryPath;
 
 @DisplayName("ConsoleContentProvider unit tests")
 class ConsoleContentProviderTest {
@@ -36,7 +37,7 @@ class ConsoleContentProviderTest {
             // Given
             URI givenUri = classpathResource(ROOT_DIR + "/2/1.txt").orElseThrow();
             Path givenPath = Path.of(givenUri);
-            FileEntry givenEntry = new FileEntry(givenPath);
+            Entry givenEntry = Entry.fromPathOrThrow(givenPath);
 
             // When
             Set<Entry> result = underTest.provideEntriesFrom(givenPath);
@@ -53,7 +54,7 @@ class ConsoleContentProviderTest {
             // Given
             URI givenUri = classpathResource(ROOT_DIR + "/A").orElseThrow();
             Path givenPath = Path.of(givenUri);
-            DirEntry givenEntry = new DirEntry(givenPath);
+            Entry givenEntry = Entry.fromPathOrThrow(givenPath);
 
             // When
             Set<Entry> result = underTest.provideEntriesFrom(givenPath);

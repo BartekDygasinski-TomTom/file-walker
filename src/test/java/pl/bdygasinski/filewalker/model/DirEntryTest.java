@@ -1,4 +1,4 @@
-package pl.bdygasinski.filewalker;
+package pl.bdygasinski.filewalker.model;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -19,9 +19,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchException;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mockStatic;
-import static pl.bdygasinski.filewalker.ClassLoadingUtil.*;
-import static pl.bdygasinski.filewalker.TmpFileCreator.createTmpDirsFromStreamAtDirectoryPath;
-import static pl.bdygasinski.filewalker.TmpFileCreator.createTmpFilesFromStreamAtDirectoryPath;
+import static pl.bdygasinski.filewalker.helper.TestClassLoadingUtil.*;
+import static pl.bdygasinski.filewalker.helper.TestTmpFileCreator.createTmpDirsFromStreamAtDirectoryPath;
+import static pl.bdygasinski.filewalker.helper.TestTmpFileCreator.createTmpFilesFromStreamAtDirectoryPath;
 
 @DisplayName("DirEntry unit tests")
 class DirEntryTest {

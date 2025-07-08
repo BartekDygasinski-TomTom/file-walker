@@ -1,4 +1,4 @@
-package pl.bdygasinski.filewalker;
+package pl.bdygasinski.filewalker.model;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -8,8 +8,8 @@ import java.nio.file.Path;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchException;
-import static pl.bdygasinski.filewalker.ClassLoadingUtil.ROOT_DIR;
-import static pl.bdygasinski.filewalker.ClassLoadingUtil.classpathResource;
+import static pl.bdygasinski.filewalker.helper.TestClassLoadingUtil.ROOT_DIR;
+import static pl.bdygasinski.filewalker.helper.TestClassLoadingUtil.classpathResource;
 
 @DisplayName("Entry unit tests")
 class EntryTest {

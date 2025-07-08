@@ -1,4 +1,4 @@
-package pl.bdygasinski.filewalker;
+package pl.bdygasinski.filewalker.model;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -14,7 +14,7 @@ import java.util.Set;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchException;
 import static org.mockito.Mockito.mockStatic;
-import static pl.bdygasinski.filewalker.ClassLoadingUtil.*;
+import static pl.bdygasinski.filewalker.helper.TestClassLoadingUtil.*;
 
 @DisplayName("FileEntry unit tests")
 class FileEntryTest {
