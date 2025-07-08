@@ -87,7 +87,7 @@ class DirEntryTest {
     @Nested
     class GetAllRootLevelOrThrowTest {
 
-        @DisplayName("Should throw if of of entries can't be created")
+        @DisplayName("Should throw if entries can't be created")
         @Test
         void shouldThrow() {
             // Given
