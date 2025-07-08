@@ -6,7 +6,7 @@ import java.util.Set;
 
 import static java.util.Objects.isNull;
 
-record FileEntry(Path value) implements Entry {
+record FileEntry(Path value, int depthLevel) implements Entry {
 
     private static final String EXPECTED_A_FILE_BUT_GOT_A_DIRECTORY = "Expected a file, but got a directory: ";
 
@@ -17,6 +17,10 @@ record FileEntry(Path value) implements Entry {
         if (Files.isDirectory(value)) {
             throw new IllegalArgumentException(EXPECTED_A_FILE_BUT_GOT_A_DIRECTORY + value);
         }
+    }
+
+    static FileEntry withDefaultDepthLevel(Path path) {
+        return new FileEntry(path, 0);
     }
 
     @Override

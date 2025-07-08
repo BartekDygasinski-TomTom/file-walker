@@ -8,7 +8,7 @@ import java.util.Set;
 import static java.util.Objects.isNull;
 import static java.util.stream.Collectors.toSet;
 
-record DirEntry(Path value) implements Entry {
+record DirEntry(Path value, int depthLevel) implements Entry {
 
     private static final String EXPECTED_A_DIRECTORY_BUT_GOT_A_FILE = "Expected a directory, but got a file: ";
 
@@ -21,6 +21,10 @@ record DirEntry(Path value) implements Entry {
         }
     }
 
+    static DirEntry withDefaultDepthLevel(Path path) {
+        return new DirEntry(path, 0);
+    }
+
     @Override
     public Set<Entry> getRootLevelEntries() {
         try (var dirStream = Files.list(value)) {
@@ -29,7 +33,7 @@ record DirEntry(Path value) implements Entry {
                     .collect(toSet());
 
         } catch (IOException e) {
-            return Set.of(new ErrorEntry());
+            return Set.of(ErrorEntry.withDefaultDepthLevel());
         }
     }
 
@@ -55,7 +59,7 @@ record DirEntry(Path value) implements Entry {
                     .collect(toSet());
 
         } catch (IOException e) {
-            return Set.of(new ErrorEntry());
+            return Set.of(ErrorEntry.withDefaultDepthLevel());
         }
     }
 }

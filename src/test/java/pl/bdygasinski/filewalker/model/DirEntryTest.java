@@ -39,7 +39,7 @@ class DirEntryTest {
             Path givenPath = null;
 
             // When
-            Exception result = catchException(() -> new DirEntry(givenPath));
+            Exception result = catchException(() -> DirEntry.withDefaultDepthLevel(givenPath));
 
             // Then
             assertThat(result)
@@ -54,7 +54,7 @@ class DirEntryTest {
             Path givenPath = Path.of(givenUri);
 
             // When
-            Exception result = catchException(() -> new DirEntry(givenPath));
+            Exception result = catchException(() -> DirEntry.withDefaultDepthLevel(givenPath));
 
             // Then
             assertThat(result)
@@ -72,7 +72,7 @@ class DirEntryTest {
             // Given
             Path givenPath = Path.of(classpathResource(ROOT_DIR).orElseThrow());
             String givenBasename = ROOT_DIR.replace("/", "");
-            DirEntry underTest = new DirEntry(givenPath);
+            DirEntry underTest = DirEntry.withDefaultDepthLevel(givenPath);
 
             // When
             String result = underTest.displayName();
@@ -92,18 +92,18 @@ class DirEntryTest {
         void shouldThrow() {
             // Given
             Path givenPath = Path.of(classpathResource(ROOT_DIR).orElseThrow());
-            DirEntry underTest = new DirEntry(givenPath);
+            DirEntry underTest = DirEntry.withDefaultDepthLevel(givenPath);
 
             try (var entryMock = mockStatic(Entry.class)) {
                 entryMock
                         .when(() -> Entry.fromPath(any(Path.class)))
-                        .thenReturn(new ErrorEntry());
+                        .thenReturn(ErrorEntry.withDefaultDepthLevel());
                 // When
                 Set<Entry> result = underTest.getRootLevelEntries();
 
                 // Then
                 assertThat(result)
-                        .containsExactly(new ErrorEntry());
+                        .containsExactly(ErrorEntry.withDefaultDepthLevel());
             }
         }
 
@@ -117,7 +117,7 @@ class DirEntryTest {
             createTmpDirsFromStreamAtDirectoryPath(dirItems.stream(), givenTempDir);
             createTmpFilesFromStreamAtDirectoryPath(fileItems.stream(), givenTempDir);
 
-            DirEntry underTest = new DirEntry(givenTempDir);
+            DirEntry underTest = DirEntry.withDefaultDepthLevel(givenTempDir);
 
             // When
             Set<Entry> result = underTest.getRootLevelEntries();
@@ -142,18 +142,18 @@ class DirEntryTest {
         void shouldThrow() {
             // Given
             Path givenPath = Path.of(classpathResource(ROOT_DIR).orElseThrow());
-            DirEntry underTest = new DirEntry(givenPath);
+            DirEntry underTest = DirEntry.withDefaultDepthLevel(givenPath);
 
             try (var entryMock = mockStatic(Entry.class)) {
                 entryMock
                         .when(() -> Entry.fromPath(any(Path.class)))
-                        .thenReturn(new ErrorEntry());
+                        .thenReturn(ErrorEntry.withDefaultDepthLevel());
                 // When
                 Set<Entry> result = underTest.getVisibleRootLevelEntries();
 
                 // Then
                 assertThat(result)
-                        .containsExactly(new ErrorEntry());
+                        .containsExactly(ErrorEntry.withDefaultDepthLevel());
             }
         }
 
@@ -167,7 +167,7 @@ class DirEntryTest {
             createTmpDirsFromStreamAtDirectoryPath(dirItems.stream(), givenTempDir);
             createTmpFilesFromStreamAtDirectoryPath(fileItems.stream(), givenTempDir);
 
-            DirEntry underTest = new DirEntry(givenTempDir);
+            DirEntry underTest = DirEntry.withDefaultDepthLevel(givenTempDir);
 
             // When
             Set<Entry> result = underTest.getVisibleRootLevelEntries();
@@ -196,7 +196,7 @@ class DirEntryTest {
         void shouldThrow() {
             // Given
             Path givenPath = Path.of(classpathResource(ROOT_DIR).orElseThrow());
-            DirEntry underTest = new DirEntry(givenPath);
+            DirEntry underTest = DirEntry.withDefaultDepthLevel(givenPath);
 
             Exception result;
 
@@ -221,7 +221,7 @@ class DirEntryTest {
         void shouldReturnTrue() {
             // Given
             Path givenPath = Path.of(classpathResource(ROOT_DIR).orElseThrow());
-            DirEntry underTest = new DirEntry(givenPath);
+            DirEntry underTest = DirEntry.withDefaultDepthLevel(givenPath);
 
             // When
             boolean result = underTest.isVisible();
@@ -236,7 +236,7 @@ class DirEntryTest {
         void shouldReturnFalse() {
             // Given
             Path givenPath = Path.of(classpathResource(HIDDEN_DIR).orElseThrow());
-            DirEntry underTest = new DirEntry(givenPath);
+            DirEntry underTest = DirEntry.withDefaultDepthLevel(givenPath);
 
             // When
             boolean result = underTest.isVisible();
@@ -257,7 +257,7 @@ class DirEntryTest {
             // Given
             URI givenUri = classpathResource(ROOT_DIR).orElseThrow();
             Path givenPath = Path.of(givenUri);
-            DirEntry underTest = new DirEntry(givenPath);
+            DirEntry underTest = DirEntry.withDefaultDepthLevel(givenPath);
 
             // When
             Path result = underTest.value();

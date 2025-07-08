@@ -3,7 +3,11 @@ package pl.bdygasinski.filewalker.model;
 import java.nio.file.Path;
 import java.util.Set;
 
-record ErrorEntry() implements Entry {
+record ErrorEntry(int depthLevel) implements Entry {
+
+    static ErrorEntry withDefaultDepthLevel() {
+        return new ErrorEntry(0);
+    }
 
     @Override
     public String displayName() {

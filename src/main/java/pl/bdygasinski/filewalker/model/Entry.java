@@ -36,12 +36,14 @@ public sealed interface Entry permits DirEntry, ErrorEntry, FileEntry {
 
     Path value();
 
+    int depthLevel();
+
 
     static Entry fromPath(Path path) {
         Queue<Supplier<Entry>> entriesSupplier = new ArrayDeque<>(List.of(
-                () -> new FileEntry(path),
-                () -> new DirEntry(path),
-                () -> new ErrorEntry()
+                () -> FileEntry.withDefaultDepthLevel(path),
+                () -> DirEntry.withDefaultDepthLevel(path),
+                ErrorEntry::withDefaultDepthLevel
         ));
 
         while (!entriesSupplier.isEmpty()) {
@@ -53,6 +55,6 @@ public sealed interface Entry permits DirEntry, ErrorEntry, FileEntry {
             }
         }
 
-        return new ErrorEntry();
+        return ErrorEntry.withDefaultDepthLevel();
     }
 }

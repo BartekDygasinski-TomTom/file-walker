@@ -29,7 +29,7 @@ class FileEntryTest {
             Path givenPath = null;
 
             // When
-            Exception result = catchException(() -> new FileEntry(givenPath));
+            Exception result = catchException(() -> FileEntry.withDefaultDepthLevel(givenPath));
 
             // Then
             assertThat(result)
@@ -44,7 +44,7 @@ class FileEntryTest {
             Path givenPath = Path.of(givenUri);
 
             // When
-            Exception result = catchException(() -> new FileEntry(givenPath));
+            Exception result = catchException(() -> FileEntry.withDefaultDepthLevel(givenPath));
 
             // Then
             assertThat(result)
@@ -63,7 +63,7 @@ class FileEntryTest {
             String givenFileBasename = "1.txt";
             URI givenUri = classpathResource(ROOT_DIR + "/2/" + givenFileBasename).orElseThrow();
             Path givenPath = Path.of(givenUri);
-            FileEntry underTest = new FileEntry(givenPath);
+            FileEntry underTest = FileEntry.withDefaultDepthLevel(givenPath);
 
             // When
             String result = underTest.displayName();
@@ -85,7 +85,7 @@ class FileEntryTest {
             String givenFileBasename = "1.txt";
             URI givenUri = classpathResource(ROOT_DIR + "/2/" + givenFileBasename).orElseThrow();
             Path givenPath = Path.of(givenUri);
-            FileEntry underTest = new FileEntry(givenPath);
+            FileEntry underTest = FileEntry.withDefaultDepthLevel(givenPath);
 
             // When
             Set<Entry> result = underTest.getRootLevelEntries();
@@ -106,7 +106,7 @@ class FileEntryTest {
             // Given
             URI givenUri = classpathResource(HIDDEN_FILE).orElseThrow();
             Path givenPath = Path.of(givenUri);
-            FileEntry underTest = new FileEntry(givenPath);
+            FileEntry underTest = FileEntry.withDefaultDepthLevel(givenPath);
 
             // When
             Set<Entry> result = underTest.getVisibleRootLevelEntries();
@@ -123,7 +123,7 @@ class FileEntryTest {
             String givenFileBasename = "1.txt";
             URI givenUri = classpathResource(ROOT_DIR + "/2/" + givenFileBasename).orElseThrow();
             Path givenPath = Path.of(givenUri);
-            FileEntry underTest = new FileEntry(givenPath);
+            FileEntry underTest = FileEntry.withDefaultDepthLevel(givenPath);
 
             // When
             Set<Entry> result = underTest.getVisibleRootLevelEntries();
@@ -143,7 +143,7 @@ class FileEntryTest {
         void shouldThrow() {
             // Given
             Path givenPath = Path.of(classpathResource(ROOT_DIR + "/2/1.txt").orElseThrow());
-            FileEntry underTest = new FileEntry(givenPath);
+            FileEntry underTest = FileEntry.withDefaultDepthLevel(givenPath);
 
             Exception result;
 
@@ -168,7 +168,7 @@ class FileEntryTest {
         void shouldReturnTrue() {
             // Given
             Path givenPath = Path.of(classpathResource(ROOT_DIR + "/2/1.txt").orElseThrow());
-            FileEntry underTest = new FileEntry(givenPath);
+            FileEntry underTest = FileEntry.withDefaultDepthLevel(givenPath);
 
             // When
             boolean result = underTest.isVisible();
@@ -183,7 +183,7 @@ class FileEntryTest {
         void shouldReturnFalse() {
             // Given
             Path givenPath = Path.of(classpathResource(HIDDEN_FILE).orElseThrow());
-            FileEntry underTest = new FileEntry(givenPath);
+            FileEntry underTest = FileEntry.withDefaultDepthLevel(givenPath);
 
             // When
             boolean result = underTest.isVisible();
@@ -204,7 +204,7 @@ class FileEntryTest {
             // Given
             URI givenUri = classpathResource(ROOT_DIR + "/2/1.txt").orElseThrow();
             Path givenPath = Path.of(givenUri);
-            FileEntry underTest = new FileEntry(givenPath);
+            FileEntry underTest = FileEntry.withDefaultDepthLevel(givenPath);
 
             // When
             Path result = underTest.value();
