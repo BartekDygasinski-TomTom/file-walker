@@ -30,7 +30,7 @@ public class TestTmpFileCreator {
                 Files.createDirectory(directoryPath.resolve(path));
 
             } catch (IOException e) {
-                throw new IllegalArgumentException("Failed to create directory at path: " + path, e);
+                throw new IllegalArgumentException("Failed to create directory at path: " + directoryPath.resolve(path), e);
             }
         });
     }
