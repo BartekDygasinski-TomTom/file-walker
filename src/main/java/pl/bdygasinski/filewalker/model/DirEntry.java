@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -32,7 +33,7 @@ record DirEntry(Path value, int depthLevel) implements Entry {
         try (var dirStream = Files.list(value)) {
             return dirStream
                     .map(path -> Entry.fromPathWithDepthLevel(path, depthLevel() + 1))
-                    .collect(Collectors.toSet());
+                    .collect(Collectors.toCollection(LinkedHashSet::new));
 
         } catch (IOException e) {
             return Set.of(ErrorEntry.withDefaultDepthLevel());

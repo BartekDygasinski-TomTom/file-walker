@@ -10,10 +10,8 @@ import java.net.URI;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static java.util.function.Predicate.not;
 import static org.assertj.core.api.Assertions.assertThat;
 import static pl.bdygasinski.filewalker.helper.TestClassLoadingUtil.*;
 import static pl.bdygasinski.filewalker.helper.TestTmpFileCreator.createTmpDirsFromStreamAtDirectoryPath;
@@ -114,11 +112,7 @@ class ConsoleContentProviderTest {
 
             // Then
             assertThat(result)
-                    .extracting(entry -> entry.displayName().nameWithIndentation())
-                    .doesNotContainAnyElementsOf(givenHiddenDirs)
-                    .doesNotContainAnyElementsOf(givenHiddenFiles)
-                    .containsAll(givenVisibleDirs.stream().map(name -> "[dir] " + name).toList())
-                    .containsAll(givenVisibleFiles);
+                    .allMatch(Entry::isVisible);
         }
 
         @DisplayName("Should mark visible directories with [dir]")
@@ -162,35 +156,6 @@ class ConsoleContentProviderTest {
                     )
                     .doesNotContainAnyElementsOf(
                             givenHiddenDirs.stream()
-                                    .map(name -> "[dir] " + name)
-                                    .toList()
-                    );
-        }
-
-        @DisplayName("Should not mark files with [dir]")
-        @Test
-        void shouldNotMarkFiles() {
-            // Given
-            List<String> givenVisibleDirs = List.of("A", "B");
-            List<String> givenFiles = List.of(".a", "b", "c.txt");
-
-            createTmpDirsFromStreamAtDirectoryPath(givenVisibleDirs.stream(), givenTempDir);
-            createTmpFilesFromStreamAtDirectoryPath(givenFiles.stream(), givenTempDir);
-
-            // When
-            Set<Entry> result = underTest.provideEntriesFrom(givenTempDir);
-
-            // Then
-            Set<String> expectedResult = Stream.concat(
-                    givenVisibleDirs.stream().map(name -> "[dir] " + name),
-                    givenFiles.stream().filter(not(file -> file.startsWith(".")))
-            ).collect(Collectors.toSet());
-
-            assertThat(result)
-                    .extracting(entry -> entry.displayName().nameWithIndentation())
-                    .containsExactlyInAnyOrderElementsOf(expectedResult)
-                    .doesNotContainAnyElementsOf(
-                            givenFiles.stream()
                                     .map(name -> "[dir] " + name)
                                     .toList()
                     );

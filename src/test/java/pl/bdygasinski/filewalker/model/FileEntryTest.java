@@ -3,6 +3,8 @@ package pl.bdygasinski.filewalker.model;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import pl.bdygasinski.filewalker.exception.EntryNotAccessibleException;
 
 import java.io.IOException;
@@ -56,12 +58,17 @@ class FileEntryTest {
     @Nested
     class DisplayNameTest {
 
-        @DisplayName("Should display base name as display name")
-        @Test
-        void shouldDisplayBasename() {
+        @DisplayName("Should display base name with file type prefix as display name")
+        @ParameterizedTest
+        @CsvSource({
+            "/2/1.txt,(text) 1.txt",
+            "/3/README,README",
+            "/A/a1/a.csv,(data) a.csv",
+            "/A/a2/b.jpg,(image) b.jpg"
+        })
+        void shouldDisplayBasenameWithFileTypePrefix(String filePath, String expectedName) {
             // Given
-            String givenFileBasename = "1.txt";
-            URI givenUri = classpathResource(ROOT_DIR + "/2/" + givenFileBasename).orElseThrow();
+            URI givenUri = classpathResource(ROOT_DIR + filePath).orElseThrow();
             Path givenPath = Path.of(givenUri);
             FileEntry underTest = FileEntry.withDefaultDepthLevel(givenPath);
 
@@ -70,7 +77,7 @@ class FileEntryTest {
 
             // Then
             assertThat(result)
-                    .isEqualTo(givenFileBasename);
+                    .isEqualTo(expectedName);
         }
     }
 
