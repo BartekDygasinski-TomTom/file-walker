@@ -114,7 +114,7 @@ class ConsoleContentProviderTest {
 
             // Then
             assertThat(result)
-                    .extracting(Entry::displayName)
+                    .extracting(entry -> entry.displayName().nameWithIndentation())
                     .doesNotContainAnyElementsOf(givenHiddenDirs)
                     .doesNotContainAnyElementsOf(givenHiddenFiles)
                     .containsAll(givenVisibleDirs.stream().map(name -> "[dir] " + name).toList())
@@ -135,7 +135,7 @@ class ConsoleContentProviderTest {
             // Then
             assertThat(result)
                     .isNotEmpty()
-                    .extracting(Entry::displayName)
+                    .extracting(entry -> entry.displayName().nameWithIndentation())
                     .allMatch(name -> name.contains("[dir] "));
         }
 
@@ -154,7 +154,7 @@ class ConsoleContentProviderTest {
 
             // Then
             assertThat(result)
-                    .extracting(Entry::displayName)
+                    .extracting(entry -> entry.displayName().nameWithIndentation())
                     .containsExactlyInAnyOrderElementsOf(
                             givenVisibleDirs.stream()
                                     .map(name -> "[dir] " + name)
@@ -187,7 +187,7 @@ class ConsoleContentProviderTest {
             ).collect(Collectors.toSet());
 
             assertThat(result)
-                    .extracting(Entry::displayName)
+                    .extracting(entry -> entry.displayName().nameWithIndentation())
                     .containsExactlyInAnyOrderElementsOf(expectedResult)
                     .doesNotContainAnyElementsOf(
                             givenFiles.stream()

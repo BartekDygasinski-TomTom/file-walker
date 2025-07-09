@@ -8,6 +8,7 @@ import java.util.Optional;
 public class TestClassLoadingUtil {
 
     public static final String ROOT_DIR = "/ROOT";
+    public static final String ROOT2_DIR = "/ROOT2";
     public static final String HIDDEN_DIR = "/.HIDDEN";
     public static final String HIDDEN_FILE = "/.hidden";
 

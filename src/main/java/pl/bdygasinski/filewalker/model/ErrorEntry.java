@@ -10,8 +10,8 @@ record ErrorEntry(int depthLevel) implements Entry {
     }
 
     @Override
-    public String displayName() {
-        return "Couldn't get access to that file. ";
+    public DisplayName displayName() {
+        return DisplayName.withNameAndDepthLevel("Couldn't get access to that file. ", depthLevel);
     }
 
     @Override

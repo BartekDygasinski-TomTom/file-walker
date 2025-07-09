@@ -13,7 +13,7 @@ import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchException;
-import static org.mockito.Mockito.mockStatic;
+import static org.mockito.Mockito.*;
 import static pl.bdygasinski.filewalker.helper.TestClassLoadingUtil.*;
 
 class FileEntryTest {
@@ -66,7 +66,7 @@ class FileEntryTest {
             FileEntry underTest = FileEntry.withDefaultDepthLevel(givenPath);
 
             // When
-            String result = underTest.displayName();
+            String result = underTest.displayName().nameWithIndentation();
 
             // Then
             assertThat(result)

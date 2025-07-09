@@ -12,6 +12,8 @@ public interface ContentProvider {
     }
 
     Set<Entry> provideEntriesFrom(Path path);
+
+    Set<Entry> provideEntriesRecursivelyFrom(Path path, int maxDepth);
 }
 
 class ConsoleContentProvider implements ContentProvider {
@@ -20,5 +22,15 @@ class ConsoleContentProvider implements ContentProvider {
     public Set<Entry> provideEntriesFrom(Path path) {
         Entry rootEntry = Entry.fromPath(path);
         return rootEntry.getVisibleRootLevelEntries();
+    }
+
+    @Override
+    public Set<Entry> provideEntriesRecursivelyFrom(Path path, int maxDepth) {
+        if (maxDepth < 0) {
+            maxDepth = 0;
+        }
+
+        Entry entry = Entry.fromPath(path);
+        return entry.getVisibleEntriesRecursively(maxDepth);
     }
 }

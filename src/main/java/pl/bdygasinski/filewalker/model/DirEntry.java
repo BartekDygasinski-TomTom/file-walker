@@ -3,7 +3,9 @@ package pl.bdygasinski.filewalker.model;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
 import static java.util.stream.Collectors.toSet;
@@ -29,8 +31,8 @@ record DirEntry(Path value, int depthLevel) implements Entry {
     public Set<Entry> getRootLevelEntries() {
         try (var dirStream = Files.list(value)) {
             return dirStream
-                    .map(Entry::fromPath)
-                    .collect(toSet());
+                    .map(path -> Entry.fromPathWithDepthLevel(path, depthLevel() + 1))
+                    .collect(Collectors.toSet());
 
         } catch (IOException e) {
             return Set.of(ErrorEntry.withDefaultDepthLevel());
@@ -47,8 +49,9 @@ record DirEntry(Path value, int depthLevel) implements Entry {
     }
 
     @Override
-    public String displayName() {
-        return String.format("[dir] %s", Entry.super.displayName());
+    public DisplayName displayName() {
+        String name = String.format("[dir] %s", Entry.super.displayName().name());
+        return DisplayName.withNameAndDepthLevel(name, depthLevel);
     }
 
     private Set<Entry> getVisible() {
@@ -60,6 +63,29 @@ record DirEntry(Path value, int depthLevel) implements Entry {
 
         } catch (IOException e) {
             return Set.of(ErrorEntry.withDefaultDepthLevel());
+        }
+    }
+
+    @Override
+    public Set<Entry> getVisibleEntriesRecursively(int maxDepth) {
+        Set<Entry> result = new HashSet<>();
+        collectEntries(this, result, maxDepth);
+
+        return result
+                .stream()
+                .filter(Entry::isVisible)
+                .collect(toSet());
+    }
+
+    private void collectEntries(Entry entry, Set<Entry> accumulator, int maxDepth) {
+        if (entry.depthLevel() <= maxDepth) {
+            accumulator.add(entry);
+        }
+
+        if (entry instanceof DirEntry dir && dir.depthLevel() <= maxDepth) {
+            for (Entry child : dir.getRootLevelEntries()) {
+                collectEntries(child, accumulator, maxDepth);
+            }
         }
     }
 }

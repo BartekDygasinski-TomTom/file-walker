@@ -21,8 +21,9 @@ public sealed interface Entry permits DirEntry, ErrorEntry, FileEntry {
 
     Set<Entry> getVisibleRootLevelEntries();
 
-    default String displayName() {
-        return value().getFileName().toString();
+    default DisplayName displayName() {
+        String entryName = value().getFileName().toString();
+        return DisplayName.withNameAndDepthLevel(entryName, depthLevel());
     }
 
     default boolean isVisible() {
@@ -38,12 +39,21 @@ public sealed interface Entry permits DirEntry, ErrorEntry, FileEntry {
 
     int depthLevel();
 
+    default Set<Entry> getVisibleEntriesRecursively(int maxDepth) {
+        return getVisibleRootLevelEntries();
+    }
+
+
 
     static Entry fromPath(Path path) {
+        return fromPathWithDepthLevel(path, 0);
+    }
+
+    static Entry fromPathWithDepthLevel(Path path, int depthLevel) {
         Queue<Supplier<Entry>> entriesSupplier = new ArrayDeque<>(List.of(
-                () -> FileEntry.withDefaultDepthLevel(path),
-                () -> DirEntry.withDefaultDepthLevel(path),
-                ErrorEntry::withDefaultDepthLevel
+                () -> new FileEntry(path, depthLevel),
+                () -> new DirEntry(path, depthLevel),
+                () -> new ErrorEntry(depthLevel)
         ));
 
         while (!entriesSupplier.isEmpty()) {

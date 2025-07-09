@@ -4,6 +4,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import pl.bdygasinski.filewalker.exception.EntryNotAccessibleException;
 
 import java.io.IOException;
@@ -18,6 +20,7 @@ import static java.util.function.Predicate.not;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchException;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.mockStatic;
 import static pl.bdygasinski.filewalker.helper.TestClassLoadingUtil.*;
 import static pl.bdygasinski.filewalker.helper.TestTmpFileCreator.createTmpDirsFromStreamAtDirectoryPath;
@@ -75,7 +78,7 @@ class DirEntryTest {
             DirEntry underTest = DirEntry.withDefaultDepthLevel(givenPath);
 
             // When
-            String result = underTest.displayName();
+            String result = underTest.displayName().name();
 
             // Then
             assertThat(result)
@@ -96,7 +99,7 @@ class DirEntryTest {
 
             try (var entryMock = mockStatic(Entry.class)) {
                 entryMock
-                        .when(() -> Entry.fromPath(any(Path.class)))
+                        .when(() -> Entry.fromPathWithDepthLevel(any(Path.class), anyInt()))
                         .thenReturn(ErrorEntry.withDefaultDepthLevel());
                 // When
                 Set<Entry> result = underTest.getRootLevelEntries();
@@ -124,7 +127,7 @@ class DirEntryTest {
 
             // Then
             assertThat(result)
-                    .extracting(Entry::displayName)
+                    .extracting(entry -> entry.displayName().name())
                     .containsAll(Stream.concat(
                             dirItems.stream().map("[dir] %s"::formatted),
                             fileItems.stream()
@@ -175,7 +178,7 @@ class DirEntryTest {
             // Then
             assertThat(result)
                     .allMatch(Entry::isVisible)
-                    .extracting(Entry::displayName)
+                    .extracting(entry -> entry.displayName().nameWithIndentation())
                     .containsAll(Stream.concat(
                             dirItems.stream()
                                     .filter(not(item -> item.startsWith(".")))
@@ -265,6 +268,82 @@ class DirEntryTest {
             // Then
             assertThat(result)
                     .isEqualTo(givenPath);
+        }
+    }
+
+    @DisplayName("getVisibleEntriesRecursively(maxDepth) unit tests")
+    @Nested
+    class GetVisibleEntriesRecursivelyTest {
+
+        @DisplayName("Should give only entries with less or equal depthLevel")
+        @ParameterizedTest
+        @ValueSource(ints = {0, 1, 2, 3})
+        void shouldGiveOnlyEntriesWithLessOrEqualDepthLevel(int maxDepth) {
+            // Given
+            Path givenPath = Path.of(classpathResource(ROOT_DIR).orElseThrow());
+            Entry underTest = Entry.fromPath(givenPath);
+
+            // When
+            Set<Entry> result = underTest.getVisibleEntriesRecursively(maxDepth);
+
+            // Then
+            assertThat(result)
+                    .allMatch(entry -> entry.depthLevel() <= maxDepth);
+        }
+
+        @DisplayName("Should give entries exactly like in test data")
+        @Test
+        void shouldGiveEntriesExactlyLikeInTestData() {
+            // Given
+            Path givenPath = Path.of(classpathResource(ROOT_DIR).orElseThrow());
+            Entry underTest = Entry.fromPath(givenPath);
+
+            // When
+            Set<Entry> result = underTest.getVisibleEntriesRecursively(2);
+
+            // Then
+            var expected = new Entry[]{
+                    Entry.fromPathWithDepthLevel(Path.of(classpathResource(ROOT_DIR).orElseThrow()), 0),
+                    Entry.fromPathWithDepthLevel(Path.of(classpathResource(ROOT_DIR + "/1").orElseThrow()), 1),
+                    Entry.fromPathWithDepthLevel(Path.of(classpathResource(ROOT_DIR + "/2").orElseThrow()), 1),
+                    Entry.fromPathWithDepthLevel(Path.of(classpathResource(ROOT_DIR + "/2/1.txt").orElseThrow()), 2),
+                    Entry.fromPathWithDepthLevel(Path.of(classpathResource(ROOT_DIR + "/2/22.txt").orElseThrow()), 2),
+                    Entry.fromPathWithDepthLevel(Path.of(classpathResource(ROOT_DIR + "/3").orElseThrow()), 1),
+                    Entry.fromPathWithDepthLevel(Path.of(classpathResource(ROOT_DIR + "/3/README").orElseThrow()), 2),
+                    Entry.fromPathWithDepthLevel(Path.of(classpathResource(ROOT_DIR + "/A").orElseThrow()), 1),
+                    Entry.fromPathWithDepthLevel(Path.of(classpathResource(ROOT_DIR + "/A/a1").orElseThrow()), 2),
+                    Entry.fromPathWithDepthLevel(Path.of(classpathResource(ROOT_DIR + "/A/a2").orElseThrow()), 2),
+                    Entry.fromPathWithDepthLevel(Path.of(classpathResource(ROOT_DIR + "/A/a3").orElseThrow()), 2),
+                    Entry.fromPathWithDepthLevel(Path.of(classpathResource(ROOT_DIR + "/B").orElseThrow()), 1),
+                    Entry.fromPathWithDepthLevel(Path.of(classpathResource(ROOT_DIR + "/B/B.jpg").orElseThrow()), 2),
+                    Entry.fromPathWithDepthLevel(Path.of(classpathResource(ROOT_DIR + "/C").orElseThrow()), 1),
+            };
+            assertThat(result)
+                    .containsExactlyInAnyOrder(expected);
+        }
+
+        @DisplayName("Should skip hidden entries")
+        @Test
+        void shouldSkipHiddenEntries() {
+            // Given
+            Path givenPath = Path.of(classpathResource(ROOT2_DIR).orElseThrow());
+            Entry underTest = Entry.fromPath(givenPath);
+
+            // When
+            Set<Entry> result = underTest.getVisibleEntriesRecursively(2);
+
+            // Then
+            var expected = new Entry[]{
+                    Entry.fromPathWithDepthLevel(Path.of(classpathResource(ROOT2_DIR).orElseThrow()), 0),
+                    Entry.fromPathWithDepthLevel(Path.of(classpathResource(ROOT2_DIR + "/1").orElseThrow()), 1),
+                    Entry.fromPathWithDepthLevel(Path.of(classpathResource(ROOT2_DIR + "/2").orElseThrow()), 1),
+                    Entry.fromPathWithDepthLevel(Path.of(classpathResource(ROOT2_DIR + "/3").orElseThrow()), 1),
+                    Entry.fromPathWithDepthLevel(Path.of(classpathResource(ROOT2_DIR + "/A").orElseThrow()), 1),
+                    Entry.fromPathWithDepthLevel(Path.of(classpathResource(ROOT2_DIR + "/B").orElseThrow()), 1),
+                    Entry.fromPathWithDepthLevel(Path.of(classpathResource(ROOT2_DIR + "/C").orElseThrow()), 1),
+            };
+            assertThat(result)
+                    .containsExactlyInAnyOrder(expected);
         }
     }
 }

@@ -3,11 +3,16 @@ package pl.bdygasinski.filewalker.model;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.mockito.MockedStatic;
+import pl.bdygasinski.filewalker.exception.EntryNotAccessibleException;
 
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.catchException;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.mockStatic;
 import static pl.bdygasinski.filewalker.helper.TestClassLoadingUtil.ROOT_DIR;
 import static pl.bdygasinski.filewalker.helper.TestClassLoadingUtil.classpathResource;
 
@@ -61,4 +66,46 @@ class EntryTest {
         }
     }
 
+    @DisplayName("isVisible() unit tests")
+    @Nested
+    class IsVisibleTest {
+
+        @DisplayName("Should return true if file isn't hidden")
+        @Test
+        void shouldReturnTrueIfFileIsntHidden() {
+            // Given
+            Path givenPath = Path.of(classpathResource(ROOT_DIR).orElseThrow());
+            Entry underTest = Entry.fromPath(givenPath);
+
+            try (MockedStatic<Files> mockedFiles = mockStatic(Files.class)) {
+                mockedFiles
+                        .when(() -> Files.isHidden(givenPath))
+                        .thenReturn(false);
+
+                // When
+                boolean result = underTest.isVisible();
+
+                // Then
+                assertThat(result)
+                        .isTrue();
+            }
+        }
+
+        @DisplayName("Should throw if file is hidden")
+        @Test
+        void shouldThrowIfFileIsHidden() {
+            // Given
+            Path givenPath = Path.of(classpathResource(ROOT_DIR).orElseThrow());
+            Entry underTest = Entry.fromPath(givenPath);
+
+            try (MockedStatic<Files> mockedFiles = mockStatic(Files.class)) {
+                mockedFiles
+                        .when(() -> Files.isHidden(givenPath))
+                        .thenThrow(new IOException("Access denied"));
+
+                // When Then
+               assertThrows(EntryNotAccessibleException.class, underTest::isVisible);
+            }
+        }
+    }
 }

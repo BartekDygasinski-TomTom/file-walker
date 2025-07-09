@@ -49,7 +49,7 @@ class ConsoleContentVisualizerTest {
 
             // Then
             assertThat(outputStream.toString())
-                    .contains(Set.of(givenEntry1.displayName(), givenEntry2.displayName()));
+                    .contains(Set.of(givenEntry1.displayName().nameWithIndentation(), givenEntry2.displayName().nameWithIndentation()));
             
         }
 
