@@ -12,6 +12,9 @@
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <jcommander.version>1.78</jcommander.version>
+
+        <!--   Test     -->
         <junit.version>5.11.1</junit.version>
         <assert.version>3.26.3</assert.version>
         <mockito.version>5.14.2</mockito.version>
@@ -19,6 +22,13 @@
     </properties>
 
     <dependencies>
+    <!--   Dev     -->
+        <dependency>
+            <groupId>com.beust</groupId>
+            <artifactId>jcommander</artifactId>
+            <version>${jcommander.version}</version>
+        </dependency>
+
     <!--   Test     -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
