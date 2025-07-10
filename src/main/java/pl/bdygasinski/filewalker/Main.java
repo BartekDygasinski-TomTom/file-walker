@@ -17,7 +17,7 @@ public class Main {
     public static void main(String... notParsedArgs) {
         var jcommander = setUpJCommander(notParsedArgs);
 
-        var visitor = new EntryFileVisitor(0, Entry::isVisible);
+        var visitor = new EntryFileVisitor(parsedArgs.getMaxDepth(), Entry::isVisible);
         var provider = EntriesProvider.withVisitor(visitor);
         var entries = extractEntriesFromProvider(parsedArgs, provider);
         var visualizer = ContentVisualizer.forEntries(entries);

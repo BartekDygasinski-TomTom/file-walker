@@ -8,6 +8,7 @@ import pl.bdygasinski.filewalker.model.FileEntry;
 public record DisplayableEntry(Entry entry) {
     static final String ERROR_ENTRY_DISPLAY_NAME_PREFIX = "Unaccessible entry:";
     static final String DIR_ENTRY_DISPLAY_NAME_PREFIX = "[dir]";
+    static final short SPACES_PER_ENTRY_DEPTH_LEVEL = 4;
 
     public String entryName() {
         return switch (entry) {
@@ -15,5 +16,13 @@ public record DisplayableEntry(Entry entry) {
             case DirEntry $ -> "%s %s".formatted(DIR_ENTRY_DISPLAY_NAME_PREFIX, entry.baseName());
             case ErrorEntry $ -> "%s %s".formatted(ERROR_ENTRY_DISPLAY_NAME_PREFIX, entry.path());
         };
+    }
+
+    public String entryNameWithIndentation() {
+        return indentation() + entryName();
+    }
+
+    private String indentation() {
+        return " ".repeat(entry.depthLevel() * SPACES_PER_ENTRY_DEPTH_LEVEL);
     }
 }

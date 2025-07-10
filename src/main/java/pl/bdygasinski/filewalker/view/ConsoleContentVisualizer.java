@@ -15,7 +15,19 @@ class ConsoleContentVisualizer implements ContentVisualizer {
 
     @Override
     public void listVisible() {
-        printEntries(DisplayableEntry::entryName);
+        if (allEntriesSameDepth()) {
+            printEntries(DisplayableEntry::entryName);
+        } else {
+            printEntries(DisplayableEntry::entryNameWithIndentation);
+        }
+    }
+
+    private boolean allEntriesSameDepth() {
+        if (entries.isEmpty()) return true;
+
+        int expectedDepth = entries.getFirst().entry().depthLevel();
+        return entries.stream()
+                .allMatch(e -> e.entry().depthLevel() == expectedDepth);
     }
 
     private void printEntries(Function<DisplayableEntry, String> customNameExtractor) {

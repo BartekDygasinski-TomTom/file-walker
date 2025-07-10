@@ -4,6 +4,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
+import pl.bdygasinski.filewalker.model.Entry;
 import pl.bdygasinski.filewalker.model.ErrorEntry;
 import pl.bdygasinski.filewalker.model.FileEntry;
 
@@ -83,6 +86,23 @@ class FileSystemEntriesProviderTest {
             // Then
             assertThat(result)
                     .containsAll(expectedResult);
+        }
+
+        @DisplayName("Should return entries with depth level till max depth value")
+        @ParameterizedTest
+        @ValueSource(ints = {0, 1, 2})
+        void shouldReturnEntriesTillMaxDepthValue(int maxDepthValue) {
+            // Given
+            var givenPath = pathFromClasspath(ROOT_DIR);
+            var givenVisitor = new EntryFileVisitor(maxDepthValue, entry -> true);
+            var underTest = new FileSystemEntriesProvider(givenVisitor);
+
+            // When
+            List<Entry> result = underTest.getEntriesFromPath(givenPath);
+
+            // Then
+            assertThat(result)
+                    .allMatch(entry -> entry.depthLevel() <= maxDepthValue);
         }
     }
 }
