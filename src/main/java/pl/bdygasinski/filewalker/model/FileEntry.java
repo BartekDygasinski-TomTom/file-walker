@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.StringJoiner;
 
 import static java.util.Objects.requireNonNull;
@@ -55,6 +56,18 @@ public final class FileEntry implements Entry {
     @Override
     public boolean isVisible() {
         return isVisible;
+    }
+
+    @Override
+    public Optional<String> fileExtension() {
+        String fileName = path.getFileName().toString();
+        int dotIndex = fileName.lastIndexOf('.');
+
+        if (dotIndex > 0 && dotIndex < fileName.length() - 1) {
+            return Optional.of(fileName.substring(dotIndex + 1));
+        }
+
+        return Optional.empty();
     }
 
     @Override

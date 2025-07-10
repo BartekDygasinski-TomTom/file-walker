@@ -12,7 +12,7 @@ public record DisplayableEntry(Entry entry) {
 
     public String entryName() {
         return switch (entry) {
-            case FileEntry $ -> entry.baseName();
+            case FileEntry $ -> fileNameEntry();
             case DirEntry $ -> "%s %s".formatted(DIR_ENTRY_DISPLAY_NAME_PREFIX, entry.baseName());
             case ErrorEntry $ -> "%s %s".formatted(ERROR_ENTRY_DISPLAY_NAME_PREFIX, entry.path());
         };
@@ -24,5 +24,11 @@ public record DisplayableEntry(Entry entry) {
 
     private String indentation() {
         return " ".repeat(entry.depthLevel() * SPACES_PER_ENTRY_DEPTH_LEVEL);
+    }
+
+    private String fileNameEntry() {
+        String extensionLabel = FileTypeClassifier.classifyExtension(entry.fileExtension().orElse(""));
+
+        return "(%s) %s".formatted(extensionLabel, entry.baseName());
     }
 }

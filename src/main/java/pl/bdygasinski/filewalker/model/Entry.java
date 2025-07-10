@@ -3,6 +3,7 @@ package pl.bdygasinski.filewalker.model;
 import java.nio.file.Path;
 import java.util.ArrayDeque;
 import java.util.List;
+import java.util.Optional;
 import java.util.Queue;
 import java.util.function.Supplier;
 
@@ -15,6 +16,10 @@ public sealed interface Entry permits DirEntry, ErrorEntry, FileEntry {
     String baseName();
 
     Path path();
+
+    default Optional<String> fileExtension() {
+        return Optional.empty();
+    }
 
     static Entry fromPathAndGraphDepth(Path path, int graphDepth) {
         Queue<Supplier<Entry>> entriesSupplier = new ArrayDeque<>(List.of(
