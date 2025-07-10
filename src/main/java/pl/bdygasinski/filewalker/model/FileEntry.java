@@ -43,6 +43,11 @@ public final class FileEntry implements Entry {
     }
 
     @Override
+    public Path path() {
+        return path;
+    }
+
+    @Override
     public int depthLevel() {
         return depthLevel;
     }

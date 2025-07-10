@@ -17,7 +17,7 @@ class ErrorEntryTest {
     @Nested
     class BaseNameTest {
 
-        @DisplayName("Should return error message with path")
+        @DisplayName("Should return empty string")
         @Test
         void baseName() {
             // Given
@@ -30,7 +30,7 @@ class ErrorEntryTest {
 
             // Then
             assertThat(result)
-                    .contains(givenPath.toString());
+                    .isEmpty();
         }
     }
 

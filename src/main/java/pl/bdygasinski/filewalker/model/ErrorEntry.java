@@ -12,7 +12,7 @@ public record ErrorEntry(int depthLevel, Path path) implements Entry {
 
     @Override
     public String baseName() {
-        return "Unaccessible entry: %s".formatted(path);
+        return "";
     }
 
     @Override

@@ -14,6 +14,8 @@ public sealed interface Entry permits DirEntry, ErrorEntry, FileEntry {
 
     String baseName();
 
+    Path path();
+
     static Entry fromPathAndGraphDepth(Path path, int graphDepth) {
         Queue<Supplier<Entry>> entriesSupplier = new ArrayDeque<>(List.of(
                 () -> FileEntry.fromPathAndDepthLevel(path, graphDepth),
