@@ -12,6 +12,15 @@
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <jcommander.version>1.82</jcommander.version>
     </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.beust</groupId>
+            <artifactId>jcommander</artifactId>
+            <version>${jcommander.version}</version>
+        </dependency>
+    </dependencies>
 
 </project>
