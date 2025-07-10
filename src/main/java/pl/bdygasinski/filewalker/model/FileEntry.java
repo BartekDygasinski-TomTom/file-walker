@@ -34,7 +34,7 @@ public final class FileEntry implements Entry {
             return new FileEntry(path, depthLevel, !Files.isHidden(path));
 
         } catch (IOException e) {
-            return new ErrorEntry(depthLevel);
+            return new ErrorEntry(depthLevel, path);
         }
     }
 

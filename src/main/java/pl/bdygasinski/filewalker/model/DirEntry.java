@@ -6,7 +6,7 @@ import java.nio.file.Path;
 
 import static java.util.Objects.isNull;
 
-public record DirEntry(String baseName, int depthLevel, boolean isVisible) implements Entry {
+public record DirEntry(String baseName, int depthLevel, boolean isVisible, Path path) implements Entry {
 
     public DirEntry {
         if (isNull(baseName)) {
@@ -16,19 +16,19 @@ public record DirEntry(String baseName, int depthLevel, boolean isVisible) imple
         if (depthLevel < 0) {
             throw new IllegalArgumentException("Depth level must be positive");
         }
+
+        if (!Files.isDirectory(path)) {
+            throw new IllegalArgumentException("Can't create DirEntry from file path");
+        }
     }
 
     public static Entry fromPathAndDepthLevel(Path path, int depthLevel) {
         try {
-            if (!Files.isDirectory(path)) {
-                throw new IllegalArgumentException("Can't create DirEntry from file path");
-            }
-
             String basename = path.getFileName().toString();
-            return new DirEntry(basename, depthLevel, !Files.isHidden(path));
+            return new DirEntry(basename, depthLevel, !Files.isHidden(path), path);
 
         } catch (IOException e) {
-            return new ErrorEntry(depthLevel);
+            return new ErrorEntry(depthLevel, path);
         }
     }
 

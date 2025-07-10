@@ -9,11 +9,11 @@ import java.util.function.Supplier;
 
 public sealed interface Entry permits DirEntry, ErrorEntry, FileEntry {
 
-    String baseName();
-
     int depthLevel();
 
-    boolean isVisible();
+     boolean isVisible();
+
+    String baseName();
 
     default Optional<Long> sizeInBytes() {
         return Optional.empty();
@@ -26,8 +26,7 @@ public sealed interface Entry permits DirEntry, ErrorEntry, FileEntry {
     static Entry fromPathAndGraphDepth(Path path, int graphDepth) {
         Queue<Supplier<Entry>> entriesSupplier = new ArrayDeque<>(List.of(
                 () -> FileEntry.fromPathAndDepthLevel(path, graphDepth),
-                () -> DirEntry.fromPathAndDepthLevel(path, graphDepth),
-                () -> new ErrorEntry(graphDepth)
+                () -> DirEntry.fromPathAndDepthLevel(path, graphDepth)
         ));
 
         while (!entriesSupplier.isEmpty()) {
@@ -39,6 +38,6 @@ public sealed interface Entry permits DirEntry, ErrorEntry, FileEntry {
             }
         }
 
-        return new ErrorEntry(graphDepth);
+        return new ErrorEntry(graphDepth, path);
     }
 }

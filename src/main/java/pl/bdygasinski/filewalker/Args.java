@@ -19,6 +19,9 @@ public class Args {
     @Parameter(names = "--max-depth", description = "Max directory depth")
     private int maxDepth = 0;
 
+    @Parameter(names = {"--help", "-h"}, description = "Shows description", help = true)
+    private boolean help = false;
+
     public String getPath() {
         return path;
     }
@@ -37,5 +40,9 @@ public class Args {
 
     public int getMaxDepth() {
         return maxDepth;
+    }
+
+    public boolean help() {
+        return help;
     }
 }

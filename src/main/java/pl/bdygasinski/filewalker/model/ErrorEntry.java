@@ -1,10 +1,12 @@
 package pl.bdygasinski.filewalker.model;
 
-public record ErrorEntry(int depthLevel) implements Entry {
+import java.nio.file.Path;
+
+public record ErrorEntry(int depthLevel, Path path) implements Entry {
 
     @Override
     public String baseName() {
-        return "Unaccessible entry";
+        return "Unaccessible entry: %s".formatted(path);
     }
 
     @Override

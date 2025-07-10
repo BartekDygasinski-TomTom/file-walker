@@ -4,12 +4,13 @@ import pl.bdygasinski.filewalker.model.Entry;
 
 import java.nio.file.Path;
 import java.util.List;
+import java.util.function.Predicate;
 
 public interface EntriesProvider {
 
     List<Entry> getEntriesFromPath(Path path, int maxDepth);
 
-    static EntriesProvider getDefault() {
-        return new FileSystemEntriesProvider();
+    static EntriesProvider withFilter(Predicate<Entry> filter) {
+        return new FileSystemEntriesProvider(filter);
     }
 }

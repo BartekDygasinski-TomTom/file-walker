@@ -17,4 +17,34 @@ public class FileSizeFormatter {
 
         return String.format("%.1f %s", size, UNITS[unitIndex]);
     }
+
+
+    public static long parseSize(String input) {
+        if (input == null || input.isBlank()) {
+            throw new IllegalArgumentException("Size string cannot be null or blank");
+        }
+
+        String normalized = input.trim().toUpperCase().replaceAll("[ ]", "");
+
+        long multiplier = 1;
+
+        if (normalized.endsWith("KB")) {
+            multiplier = 1024L;
+            normalized = normalized.replace("KB", "");
+        } else if (normalized.endsWith("MB")) {
+            multiplier = 1024L * 1024L;
+            normalized = normalized.replace("MB", "");
+        } else if (normalized.endsWith("GB")) {
+            multiplier = 1024L * 1024L * 1024L;
+            normalized = normalized.replace("GB", "");
+        } else if (normalized.endsWith("TB")) {
+            multiplier = 1024L * 1024L * 1024L * 1024L;
+            normalized = normalized.replace("TB", "");
+        } else if (normalized.endsWith("B")) {
+            normalized = normalized.replace("B", "");
+        }
+
+        long value = Long.parseLong(normalized);
+        return value * multiplier;
+    }
 }

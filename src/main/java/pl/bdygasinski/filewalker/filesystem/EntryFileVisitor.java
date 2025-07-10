@@ -10,57 +10,62 @@ import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
+
+import static java.util.Objects.requireNonNull;
 
 class EntryFileVisitor implements FileVisitor<Path> {
     private final List<Entry> entries = new ArrayList<>();
     private final int maxDepth;
+    private final Predicate<Entry> filter;
     private int currDepth = 0;
 
-    public EntryFileVisitor(int maxDepth) {
+    public EntryFileVisitor(int maxDepth, Predicate<Entry> filter) {
+        if (maxDepth < 0) {
+            throw new IllegalArgumentException("Max depth must be positive but got %s".formatted(maxDepth));
+        }
         this.maxDepth = maxDepth;
+        this.filter = requireNonNull(filter);
     }
 
     public List<Entry> getEntries() {
-        return entries;
+        return List.copyOf(entries);
     }
 
     @Override
-    public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) {
+    public FileVisitResult preVisitDirectory(Path dirPath, BasicFileAttributes attrs) {
         if (currDepth > maxDepth) {
             return FileVisitResult.SKIP_SUBTREE;
         }
 
-        try {
-            entries.add(Entry.fromPathAndGraphDepth(dir, currDepth));
-        } catch (Exception e) {
-            entries.add(new ErrorEntry(currDepth));
-        }
+        Entry entry = Entry.fromPathAndGraphDepth(dirPath, currDepth);
+        entries.add(entry);
 
         currDepth++;
         return FileVisitResult.CONTINUE;
     }
 
     @Override
-    public FileVisitResult postVisitDirectory(Path dir, IOException exc) {
+    public FileVisitResult postVisitDirectory(Path dirPath, IOException exc) {
         currDepth--;
         return FileVisitResult.CONTINUE;
     }
 
     @Override
-    public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
+    public FileVisitResult visitFile(Path filePath, BasicFileAttributes attrs) {
         if (currDepth <= maxDepth) {
-            try {
-                entries.add(Entry.fromPathAndGraphDepth(file, currDepth));
-            } catch (Exception e) {
-                entries.add(new ErrorEntry(currDepth));
+            Entry entry = Entry.fromPathAndGraphDepth(filePath, currDepth);
+            if (filter.test(entry)) {
+                entries.add(entry);
+
             }
         }
         return FileVisitResult.CONTINUE;
     }
 
     @Override
-    public FileVisitResult visitFileFailed(Path file, IOException exc) {
-        entries.add(new ErrorEntry(currDepth));
+    public FileVisitResult visitFileFailed(Path filePath, IOException exc) {
+        entries.add(new ErrorEntry(currDepth, filePath));
         return FileVisitResult.CONTINUE;
     }
 }
