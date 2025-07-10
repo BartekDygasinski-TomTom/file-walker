@@ -37,4 +37,8 @@ public class TestClassLoadingUtil {
     public static Path pathFromClasspath(String classpathAbsoluteResourcePath) {
         return Path.of(classpathResource(classpathAbsoluteResourcePath).orElseThrow());
     }
+
+    public static Path pathWithoutValidation(String notValidPath) {
+        return Path.of(notValidPath);
+    }
 }
