@@ -18,7 +18,7 @@ public class EntryFileVisitor implements FileVisitor<Path> {
     private final List<Entry> entries;
     private final int maxDepth;
     private final Predicate<Entry> filter;
-    private int currDepth = 0;
+    private int currDepth;
 
     public EntryFileVisitor(int maxDepth, Predicate<Entry> filter) {
         this(maxDepth, filter, new ArrayList<>());
@@ -32,6 +32,7 @@ public class EntryFileVisitor implements FileVisitor<Path> {
         this.filter = requireNonNull(filter, "Filter is required but bot %s".formatted(filter));
         this.maxDepth = maxDepth;
         this.entries = new ArrayList<>(startList);
+        this.currDepth = 0;
     }
 
     public List<Entry> getEntries() {
@@ -42,6 +43,10 @@ public class EntryFileVisitor implements FileVisitor<Path> {
     public FileVisitResult preVisitDirectory(Path dirPath, BasicFileAttributes attrs) {
         if (currDepth > maxDepth) {
             return FileVisitResult.SKIP_SUBTREE;
+        }
+
+        if (currDepth == maxDepth && maxDepth == 0) {
+            return FileVisitResult.CONTINUE;
         }
 
         Entry entry = Entry.fromPathAndGraphDepth(dirPath, currDepth);

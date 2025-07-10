@@ -9,8 +9,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 import java.nio.file.Path;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
+import static pl.bdygasinski.filewalker.helper.TestClassLoadingUtil.pathWithoutValidation;
 
 class ErrorEntryTest {
 
@@ -43,7 +42,8 @@ class ErrorEntryTest {
         @Test
         void isVisible() {
             // Given
-            var underTest = new ErrorEntry(anyInt(), any(Path.class));
+            var givenPath = pathWithoutValidation("incorrect");
+            var underTest = new ErrorEntry(0, givenPath);
 
             // When
             boolean result = underTest.isVisible();
@@ -63,7 +63,8 @@ class ErrorEntryTest {
         @ValueSource(ints = {0, 1, 2, Integer.MAX_VALUE})
         void shouldBeSameWhenPositive(int depthLevel) {
             // Given
-            var underTest = new ErrorEntry(depthLevel, any());
+            var givenPath = pathWithoutValidation("incorrect");
+            var underTest = new ErrorEntry(depthLevel, givenPath);
 
             // When
             int result = underTest.depthLevel();
@@ -78,7 +79,8 @@ class ErrorEntryTest {
         @ValueSource(ints = {Integer.MIN_VALUE, -2, -1})
         void shouldBe0WhenNegative(int depthLevel) {
             // Given
-            var underTest = new ErrorEntry(depthLevel, any());
+            var givenPath = pathWithoutValidation("incorrect");
+            var underTest = new ErrorEntry(depthLevel, givenPath);
 
             // When
             int result = underTest.depthLevel();

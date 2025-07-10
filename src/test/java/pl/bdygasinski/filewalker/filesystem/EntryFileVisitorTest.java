@@ -46,6 +46,21 @@ class EntryFileVisitorTest {
                     .isNotNull()
                     .hasMessageContaining("null");
         }
+
+        @DisplayName("Should set current depth at 0 when depth is > 0")
+        @ParameterizedTest
+        @ValueSource(ints = {1, Integer.MAX_VALUE})
+        void shouldSetCurDepth0(int maxDepth) {
+            // Given
+            var underTest = new EntryFileVisitor(maxDepth, entry -> true);
+
+            // When
+            var result = underTest.getCurrDepth();
+
+            // Then
+            assertThat(result)
+                    .isEqualTo(0);
+        }
     }
 
     @DisplayName("getEntries()")
@@ -100,13 +115,38 @@ class EntryFileVisitorTest {
                     .isEqualTo(FileVisitResult.SKIP_SUBTREE);
         }
 
-        @DisplayName("Should add entry to collection if curr depth is not > max depth")
+        @DisplayName("Should skip adding dir entry to collection if curr and max depth is 0")
+        @Test
+        void shouldSkipAddingDirEntryToCollectionIfCurrAndMaxDepth0() {
+            // Given
+            var maxDepth = 0;
+            List<Entry> data = List.of();
+            var givenPath = pathFromClasspath(ROOT_DIR);
+            var underTest = new EntryFileVisitor(maxDepth, entry -> true, data);
+            var currDepth = underTest.getCurrDepth();
+
+            // When
+            var result = underTest.preVisitDirectory(givenPath, null);
+
+            // Then
+            assertThat(currDepth)
+                    .isEqualTo(maxDepth)
+                    .isEqualTo(0);
+
+            assertThat(result)
+                    .isEqualTo(FileVisitResult.CONTINUE);
+
+            assertThat(underTest.getEntries())
+                    .isEmpty();
+        }
+
+        @DisplayName("Should add entry to collection if curr depth !> max depth and max depth isn't 0")
         @Test
         void shouldAddEntry() {
             // Given
             var givenPath = pathFromClasspath(ROOT_DIR);
             var givenData = List.<Entry>of();
-            var underTest = new EntryFileVisitor(0, entry -> true, givenData);
+            var underTest = new EntryFileVisitor(1, entry -> true, givenData);
 
             // When
             var result = underTest.preVisitDirectory(givenPath, null);

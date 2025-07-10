@@ -8,7 +8,6 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchException;
-import static org.mockito.ArgumentMatchers.any;
 import static pl.bdygasinski.filewalker.helper.TestClassLoadingUtil.*;
 
 class DirEntryTest {
@@ -21,7 +20,8 @@ class DirEntryTest {
         @Test
         void shouldThrowIfBaseNameIsNull() {
             // Given + When
-            var result = catchException(() -> new DirEntry(null, 0, true, any()));
+            var givenPath = pathFromClasspath(ROOT_DIR);
+            var result = catchException(() -> new DirEntry(null, 0, true, givenPath));
 
             // Then
             assertThat(result)
@@ -34,7 +34,8 @@ class DirEntryTest {
         void shouldThrowIfDepthLevelIsNegative() {
             // Given + When
             var givenDepthLevel = -1;
-            var result = catchException(() -> new DirEntry("", givenDepthLevel, true, any()));
+            var givenPath = pathWithoutValidation("incorrect");
+            var result = catchException(() -> new DirEntry("", givenDepthLevel, true, givenPath));
 
             // Then
             assertThat(result)
