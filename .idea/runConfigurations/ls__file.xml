@@ -1,0 +1,10 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="ls .file" type="Application" factoryName="Application">
+    <option name="MAIN_CLASS_NAME" value="pl.bdygasinski.filewalker.Main" />
+    <module name="file-walker" />
+    <option name="PROGRAM_PARAMETERS" value="src/test/resources/ROOT/.hidden" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

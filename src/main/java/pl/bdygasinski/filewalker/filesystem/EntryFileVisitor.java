@@ -19,6 +19,7 @@ public class EntryFileVisitor implements FileVisitor<Path> {
     private final int maxDepth;
     private final Predicate<Entry> filter;
     private int currDepth;
+    private boolean isRooVisited = false;
 
     public EntryFileVisitor(int maxDepth, Predicate<Entry> filter) {
         this(maxDepth, filter, new ArrayList<>());
@@ -45,12 +46,15 @@ public class EntryFileVisitor implements FileVisitor<Path> {
             return FileVisitResult.SKIP_SUBTREE;
         }
 
-        if (currDepth == maxDepth && maxDepth == 0) {
+        if (!isRooVisited && maxDepth == 0 && currDepth == maxDepth) {
+            isRooVisited = true;
             return FileVisitResult.CONTINUE;
         }
 
         Entry entry = Entry.fromPathAndGraphDepth(dirPath, currDepth);
-        entries.add(entry);
+        if (entry.isVisible()) {
+            entries.add(entry);
+        }
 
         incrementCurrDepth();
         return FileVisitResult.CONTINUE;
@@ -66,7 +70,7 @@ public class EntryFileVisitor implements FileVisitor<Path> {
     public FileVisitResult visitFile(Path filePath, BasicFileAttributes attrs) {
         if (currDepth <= maxDepth) {
             Entry entry = Entry.fromPathAndGraphDepth(filePath, currDepth);
-            if (filter.test(entry)) {
+            if (filter.test(entry) && entry.isVisible()) {
                 entries.add(entry);
 
             }

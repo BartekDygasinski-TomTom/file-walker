@@ -1,0 +1,16 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="ls dir" type="Application" factoryName="Application">
+    <option name="MAIN_CLASS_NAME" value="pl.bdygasinski.filewalker.Main" />
+    <module name="file-walker" />
+    <option name="PROGRAM_PARAMETERS" value="src/test/resources/ROOT" />
+    <extension name="coverage">
+      <pattern>
+        <option name="PATTERN" value="pl.bdygasinski.filewalker.*" />
+        <option name="ENABLED" value="true" />
+      </pattern>
+    </extension>
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
