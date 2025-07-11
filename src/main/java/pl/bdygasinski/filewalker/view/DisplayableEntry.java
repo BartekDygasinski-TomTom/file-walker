@@ -29,6 +29,10 @@ public record DisplayableEntry(Entry entry) {
     private String fileNameEntry() {
         String extensionLabel = FileTypeClassifier.classifyExtension(entry.fileExtension().orElse(""));
 
-        return "(%s) %s".formatted(extensionLabel, entry.baseName());
+        String humanReadableFileSize = entry.sizeInBytes()
+                .map(FileSizeFormatter::toHumanReadable)
+                .orElse("unknown");
+
+        return "(%s) %s (%s)".formatted(extensionLabel, entry.baseName(), humanReadableFileSize);
     }
 }

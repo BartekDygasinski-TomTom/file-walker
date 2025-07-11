@@ -71,6 +71,16 @@ public final class FileEntry implements Entry {
     }
 
     @Override
+    public Optional<Long> sizeInBytes() {
+        try {
+            return Optional.of(Files.size(path));
+
+        } catch (IOException e) {
+            return Optional.empty();
+        }
+    }
+
+    @Override
     public String toString() {
         return new StringJoiner(", ", FileEntry.class.getSimpleName() + "[", "]")
                 .add("path=" + path)

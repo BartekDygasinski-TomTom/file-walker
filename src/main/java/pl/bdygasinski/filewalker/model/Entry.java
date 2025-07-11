@@ -21,6 +21,10 @@ public sealed interface Entry permits DirEntry, ErrorEntry, FileEntry {
         return Optional.empty();
     }
 
+    default Optional<Long> sizeInBytes() {
+        return Optional.empty();
+    }
+
     static Entry fromPathAndGraphDepth(Path path, int graphDepth) {
         Queue<Supplier<Entry>> entriesSupplier = new ArrayDeque<>(List.of(
                 () -> FileEntry.fromPathAndDepthLevel(path, graphDepth),

@@ -8,7 +8,11 @@ import pl.bdygasinski.filewalker.view.ContentVisualizer;
 import pl.bdygasinski.filewalker.view.DisplayableEntry;
 
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
+
+import static java.util.Objects.nonNull;
 
 public class Main {
 
@@ -17,7 +21,9 @@ public class Main {
     public static void main(String... notParsedArgs) {
         var jcommander = setUpJCommander(notParsedArgs);
 
-        var visitor = new EntryFileVisitor(parsedArgs.getMaxDepth(), Entry::isVisible);
+        var filter = prepareCombinedFilterFromArgs(parsedArgs);
+        var visitor = new EntryFileVisitor(parsedArgs.getMaxDepth(), filter
+        );
         var provider = EntriesProvider.withVisitor(visitor);
         var entries = extractEntriesFromProvider(parsedArgs, provider);
         var visualizer = ContentVisualizer.forEntries(entries);
@@ -43,4 +49,28 @@ public class Main {
         commander.parse(notParsedArgs);
         return commander;
     }
+
+    static Predicate<Entry> prepareCombinedFilterFromArgs(Args args) {
+        List<Predicate<Entry>> filters = new ArrayList<>();
+
+        if (nonNull(args.getName())) {
+            Predicate<Entry> newFilter = entry -> entry.baseName().contains(args.getName());
+            filters.add(newFilter);
+        }
+
+        if (nonNull(args.getExt())) {
+            Predicate<Entry> newFilter = entry -> entry.fileExtension()
+                    .map(extension -> extension.equals(args.getExt()))
+                    .orElse(false);
+            filters.add(newFilter);
+        }
+
+
+        return filters
+                .stream()
+                .reduce(entry -> true, Predicate::and);
+    }
+
+
+
 }
