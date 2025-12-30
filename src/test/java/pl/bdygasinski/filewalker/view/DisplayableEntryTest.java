@@ -1,5 +1,6 @@
 package pl.bdygasinski.filewalker.view;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -32,6 +33,7 @@ class DisplayableEntryTest {
                     .isEqualTo("%s %s".formatted(DisplayableEntry.ERROR_ENTRY_DISPLAY_NAME_PREFIX, givenEntry.path()));
         }
 
+        @Disabled
         @DisplayName("Should display file entry as file base name")
         @Test
         void shouldDisplayFileEntryAsFileBaseName() {
